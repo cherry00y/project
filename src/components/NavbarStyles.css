@@ -1,0 +1,114 @@
+.NavbarItems{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    box-shadow: 0 5px 15px 0 rgba(0, 0, 0, .25);
+    width: 85%;
+    height: 80px;
+    border-radius: 13px;
+    margin: 30px auto 0;
+}
+
+.navbar-logo{
+    color: #222;
+    font-size: 1.5rem;
+    cursor: pointer;
+
+}
+
+.nav-menu{
+    display: grid;
+    grid-template-columns: repeat(6,auto);
+    grid-gap: 10px;
+    list-style: none;
+    align-items: center;
+}
+
+.nav-links{
+    text-decoration: none;
+    color: #222;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 13px;
+    padding: 10px;
+    white-space: nowrap;
+    background-color: #a2aff7;
+}
+
+.nav-links i{
+    padding-right: 10px;
+}
+
+.nav-links:hover{
+    background-color: #bbc3f3;
+    color: #fff;
+    border-radius: 13px;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-links-app{
+    display: none;   
+}
+
+button{
+    padding: 10px;
+    white-space: nowrap;
+    border-radius: 0.3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    border-radius: 13px;
+}
+
+
+button:hover{
+    border-radius: 13px;
+    background-color: #151516;
+    color: #fff;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff; /* กำหนดให้มีสีพื้นหลังเป็นสีขาว */
+    min-width: fit-content; /* กำหนดขนาดของ dropdown ให้พอดีกับเนื้อหา */
+    z-index: 1;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* เพิ่มเงาใต้ dropdown */
+    margin-top: 10px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #c4bcba5c;
+    border-radius: 8px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    outline: none; /* เมื่อ hover ไม่มีเส้นขอบ */
+    border: none; /* เมื่อ hover ไม่มีขอบ */
+    
+}
+
+.dropdown:hover .nav-links {
+    background-color: #a2aff7;
+    color: #fff;
+    border-radius: 13px;
+    transition: all 0.2s ease-in-out;
+}
+

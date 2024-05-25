@@ -1,0 +1,59 @@
+import React, { useEffect, useState } from 'react';
+import Navbar from '../components/Navbar';
+import { MenuItems } from '../components/MenuItems';
+import './DataStyles.css'
+import { useNavigate } from 'react-router-dom';
+import data from '../data/data.json';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'; // นำเข้าไอคอนที่ถูกต้อง
+
+function Datapromotion(){
+    const navigate = useNavigate();
+
+    const handleClick = () =>{
+        navigate('/create/infomation')
+    }
+
+    const EditClick = () =>{
+        navigate('/edit/infomation')
+    }
+
+    const[news, setNews] = useState([]);
+
+    useEffect(() =>{
+        setNews(data)
+    },[]);
+
+    return(
+        <>
+        <Navbar MenuItems={MenuItems}/>
+        <div className='info-text'>
+            <h2>Infomation</h2>
+        </div>
+        <div className='info-pormo-text'>
+            <h1>infomation & promotion</h1>
+            <button className = 'button-add' onClick={handleClick}>Create Infomation</button>
+        </div> 
+        <div className='container-data'>
+                {news.map(item => (
+                    <div key={item.id} className='box'>
+                        <div className='content'>
+                            <div className='detail'>
+                                <div className='info'>
+                                    <h1>{item.title}</h1>
+                                    <p>{item.detail}</p>
+                                </div>
+                            </div>
+                            <p>
+                                {new Date(item.date).toLocaleDateString('th-TH')} 
+                                <FontAwesomeIcon icon={faPenToSquare} onClick={EditClick}/>
+                            </p>  
+                        </div>
+                    </div>
+                ))}
+        </div>
+        
+        </>
+    )
+}
+export default Datapromotion;

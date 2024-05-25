@@ -1,0 +1,131 @@
+body{
+    margin: 0;
+    font-family:  Arial, Helvetica, sans-serif;
+    background-color: #fff;
+}
+
+.container{
+    display: flex;
+    height: 100vh;
+
+}
+
+.image-section{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.image{
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+  }
+  
+  .form-container {
+    width: 80%;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  
+  .form-container h1 {
+    margin-top: 0;
+    font-size: 24px;
+  }
+  
+  .form-container p {
+    margin: 10px 0;
+  }
+  
+  .form-container h4 {
+    color: #6c63ff;
+    text-decoration: none;
+  }
+  
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+  }
+  
+  .form-container label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-container input {
+    width: 250%;
+    height: 60px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #b2b4f5;
+    border-radius: 50px;
+    box-sizing: border-box;
+  }
+  
+  .password-input {
+    position: relative;
+  }
+  
+  .password-input i {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    margin-left: 30pc;
+  }
+  .remember-me {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 250%;
+  }
+  
+  .remember-me-check-text {
+    display: flex;
+    align-items: center;
+  }
+
+  .remember-me-check-text input {
+    margin-left: 20px;
+    margin-right: 10px;
+    width: 20px;
+  }
+
+  .remember-me label {
+    margin: 0;
+  }
+  
+  .remember-me .forget-password {
+    font-size: 12px;
+    color: #6c63ff;
+  }
+
+  .sign-in-button {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    width: 250%;
+  }
+  
+  .sign-in-button:hover {
+    background-color: #5751d1;
+    border-radius: 100px;
+  }

@@ -1,0 +1,92 @@
+.info-text{
+    font-size: medium;
+    color: #222;
+    border-radius: 13px;
+    white-space: nowrap;
+    background-color: #9cccff;
+    width: 150px; 
+    height: 50px;
+    margin: 0 auto;
+    margin-top: 4pc;
+    border: 1px solid #000;
+}
+
+.info-text h2{
+    text-align: center;
+    margin-top: 8px;
+}
+
+.info-pormo-text{
+    text-align: center;
+    margin-top: 10px;
+}
+
+.button-add{
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    border-radius: 13px;
+    background-color:#9cccff;
+    border: 1px solid #000;
+    margin-right: 60pc;
+    margin-top: 60px;
+}
+
+.button-add:hover{
+    border-radius: 13px;
+    background-color: #9cccff;
+    color: #fff;
+}
+
+.container-data{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 40px;
+    padding-left: 140px;
+    padding-right: 140px;
+    box-sizing: border-box;
+}
+
+.box{
+    width: 500px;
+    height: 200px;
+    overflow: hidden;
+    margin-left: 50px;
+    margin: 10px;
+    background: #9cccff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid #ada7f5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content{
+    align-items: center;
+    max-width: 100%;
+}
+
+.container .box .content .detail .info{
+    justify-content: space-between;
+}
+
+.info h1{
+    font-size: 25px;
+}
+
+.info p{
+    margin-top: 10px;
+}
+
+.content p{
+    margin-top: 10px;
+    justify-content: space-between;
+    display: flex; 
+    align-items: center;
+}
+
+
+
