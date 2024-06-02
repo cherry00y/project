@@ -13,6 +13,8 @@ app.get('/', (req, res) => {
     res.send('anuthida')
 })
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log('CORS-enabled web server listening on port 3000')
+
+
+app.listen(process.env.PORT || 3004, () => {
+    console.log('CORS-enabled web server listening on port 3001')
 })
