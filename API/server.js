@@ -13,6 +13,21 @@ app.get('/', (req, res) => {
     res.send('anuthida')
 })
 
+//ดึงข้อมูลinformation
+app.get('/promotion', (req,res) =>{
+
+
+})
+
+app.get('/trivia', (req,res) =>{
+
+})
+
+app.post('/promotion', (req,res) =>{
+    connection.query(
+        
+    )
+})
 
 
 app.listen(process.env.PORT || 3002, () => {
