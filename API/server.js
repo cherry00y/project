@@ -32,33 +32,20 @@ app.post('/promotion', (req,res) =>{
 })
 
 //ลงทะเบียนadmin
-app.post('/signup', (req, res) => {
-    const { fname, lname, phone, username, password } = req.body;
-
-            // แฮชรหัสผ่านก่อนเก็บลงฐานข้อมูล
-            bcrypt.hash(password, saltRounds, (err, hash) => {
-                if (err) {
-                    console.error('Error hashing password:', err);
-                    res.status(500).send('Error processing signup');
-                    return;
-                }
-
-                // แทรกข้อมูลลงฐานข้อมูล
-                connection.query(
-                    'INSERT INTO `admin` (`fname`, `lname`, `phone`, `username`, `password`) VALUES (?, ?, ?, ?, ?)',
-                    [fname, lname, phone, username, hash],
-                    (err, results) => {
-                        if (err) {
-                            console.error('Error in POST /signup:', err);
-                            res.status(500).send('Error adding signup');
-                        } else {
-                            res.status(201).send(results);
-                        }
-                    }
-                );
-            });
-        });
-
+app.post('/singup', (req, res) => {
+    connection.query(
+        'INSERT INTO `admin` (`fname`, `lname`, `phone`,`username`,`password`) VALUES (?, ?, ?, ?, ?)',
+        [req.body.fname, req.body.lname, req.body.phone, req.body.username, req.body.password],
+         function (err, results, fields) {
+            if (err) {
+                console.error('Error in POST /singup:', err);
+                res.status(500).send('Error adding singup');
+            } else {
+                res.status(201).send(results);
+            }
+        }
+    )
+})
 
 app.get('/infoadmin', (req, res) => {
     connection.query(
