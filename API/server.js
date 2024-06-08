@@ -29,7 +29,23 @@ app.post('/promotion', (req,res) =>{
     )
 })
 
+//ลงทะเบียนadmin
+app.post('/singup', (req, res) => {
+    connection.query(
+        'INSERT INTO `admin` (`fname`, `lname`, `phone`,`username`,`password`) VALUES (?, ?, ?, ?, ?)',
+        [req.body.fname, req.body.lname, req.body.phone, req.body.username, req.body.password],
+         function (err, results, fields) {
+            if (err) {
+                console.error('Error in POST /singup:', err);
+                res.status(500).send('Error adding singup');
+            } else {
+                res.status(201).send(results);
+            }
+        }
+    )
+})
+
 
 app.listen(process.env.PORT || 3002, () => {
-    console.log('CORS-enabled web server listening on port 3001')
+    console.log('CORS-enabled web server listening on port 3002')
 })
