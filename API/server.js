@@ -35,32 +35,6 @@ app.post('/promotion', (req,res) =>{
 app.post('/signup', (req, res) => {
     const { fname, lname, phone, username, password } = req.body;
 
-    // ตรวจสอบการใช้ phone ซ้ำ
-    connection.query('SELECT * FROM `admin` WHERE `phone` = ?', [phone], (err, results) => {
-        if (err) {
-            console.error('Error checking phone:', err);
-            res.status(500).send('Error processing signup');
-            return;
-        }
-
-        if (results.length > 0) {
-            res.status(400).send('Phone number already in use');
-            return;
-        }
-
-        // ตรวจสอบการใช้ username ซ้ำ
-        connection.query('SELECT * FROM `admin` WHERE `username` = ?', [username], (err, results) => {
-            if (err) {
-                console.error('Error checking username:', err);
-                res.status(500).send('Error processing signup');
-                return;
-            }
-
-            if (results.length > 0) {
-                res.status(400).send('Username already in use');
-                return;
-            }
-
             // แฮชรหัสผ่านก่อนเก็บลงฐานข้อมูล
             bcrypt.hash(password, saltRounds, (err, hash) => {
                 if (err) {
@@ -84,8 +58,6 @@ app.post('/signup', (req, res) => {
                 );
             });
         });
-    });
-});
 
 
 app.get('/infoadmin', (req, res) => {
