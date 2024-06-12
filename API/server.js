@@ -146,7 +146,7 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     connection.execute(
-        'SELECT * FROM Register WHERE email=? AND pass=?',
+        'SELECT * FROM admin WHERE username=? AND password=?',
         [username,password],
         function(err, results, fields) {
             if (err) {
