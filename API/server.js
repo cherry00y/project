@@ -142,7 +142,7 @@ app.post('/signup', (req, res) => {
 });
 
 //login
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     connection.execute(
