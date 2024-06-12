@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 app.use(cors())
 app.use(express.json())
 
-const connection = mysql.createConnection(process.env.DATABASE_URL)
+const connection = mysql.createPool(process.env.DATABASE_URL)
 
 app.get('/', (req, res) => {
     res.send('anuthida')
@@ -60,27 +60,39 @@ app.put('/promotion/:id', (req, res) => {
     const { id } = req.params;
     const { title, detail, date, pic, type, id_admin } = req.body;
 
-    // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
-    connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
+    connection.getConnection((err, connection) => {
         if (err) {
-            console.error('Error in selecting admin:', err);
-            res.status(500).send('Error selecting admin');
-        } else if (results.length === 0) {
-            res.status(404).send('Admin not found');
-        } else {
-            const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('UPDATE `information` SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
-                [title, detail, date, pic, type, id_admin, adminName, id],
-                (err, results) => {
+            console.error('Error getting database connection:', err);
+            return res.status(500).send('Error getting database connection');
+        }
+
+        connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
+            if (err) {
+                console.error('Error in selecting admin:', err);
+                connection.release(); // ปล่อยการเชื่อมต่อกลับไปยัง pool
+                return res.status(500).send('Error selecting admin');
+            } else if (results.length === 0) {
+                connection.release(); // ปล่อยการเชื่อมต่อกลับไปยัง pool
+                return res.status(404).send('Admin not found');
+            } else {
+                const adminName = `${results[0].fname} ${results[0].lname}`;
+                const sql = 'UPDATE `information` SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?';
+                const values = [title, detail, date, pic, type, id_admin, adminName, id];
+
+                console.log('SQL Query:', sql);
+                console.log('Values:', values);
+
+                connection.query(sql, values, (err, results) => {
+                    connection.release(); // ปล่อยการเชื่อมต่อกลับไปยัง pool
                     if (err) {
                         console.error('Error in PUT /promotion:', err);
-                        res.status(500).send('Error updating information promotion');
+                        return res.status(500).send('Error updating information promotion');
                     } else {
-                        res.status(200).send(results);
+                        return res.status(200).send(results);
                     }
-                }
-            );
-        }
+                });
+            }
+        });
     });
 });
 
