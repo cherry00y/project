@@ -150,7 +150,7 @@ app.post('/login', async (req, res) => {
     }
 
     try {
-        const [rows] = await connection.execute('SELECT * FROM users WHERE username = ?', [username]);
+        const [rows] = await connection.execute('SELECT * FROM admin WHERE username = ? AND password = ?', [username]);
 
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Invalid username or password.' });
