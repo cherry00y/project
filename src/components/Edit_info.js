@@ -26,7 +26,7 @@ function EditInfo(){
                     </div>
                     <div className="input-group">
                         <lable for="detail">รายละเอียด</lable>
-                        <textarea id="detail" placeholder="รายละเอียด"/>  
+                        <input id="detail" placeholder="รายละเอียด"/>  
                     </div>
                 </div>
                 <div className="row2">

@@ -4,7 +4,9 @@ const mysql = require('mysql2')
 require('dotenv').config()
 const app = express()
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const saltRounds = 10;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 app.use(cors())
 app.use(express.json())
@@ -25,11 +27,63 @@ app.get('/trivia', (req,res) =>{
 
 })
 
-app.post('/promotion', (req,res) =>{
-    connection.query(
-        
-    )
-})
+// เพิ่ม promotion
+app.post('/promotion', (req, res) => {
+    const {title, detail, date, pic, type, id_admin} = req.body;
+
+    // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
+    connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
+        if (err) {
+            console.error('Error in selecting admin:', err);
+            res.status(500).send('Error selecting admin');
+        } else if (results.length === 0) {
+            res.status(404).send('Admin not found');
+        } else {
+            const adminName = `${results[0].fname} ${results[0].lname}`;
+            connection.query('INSERT INTO `information` (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+                [title, detail, date, pic, type, id_admin, adminName, null],  // updated_by เป็น null สำหรับการเพิ่มข้อมูลครั้งแรก
+                (err, results) => {
+                    if (err) {
+                        console.error('Error in POST /promotion:', err);
+                        res.status(500).send('Error adding information promotion');
+                    } else {
+                        res.status(201).send(results);
+                    }
+                }
+            );
+        }
+    });
+});
+
+// แก้ไข promotion
+app.put('/promotion/:id', (req, res) => {
+    const {id} = req.params;
+    const {title, detail, date, pic, type, id_admin} = req.body;
+
+    // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
+    connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
+        if (err) {
+            console.error('Error in selecting admin:', err);
+            res.status(500).send('Error selecting admin');
+        } else if (results.length === 0) {
+            res.status(404).send('Admin not found');
+        } else {
+            const adminName = `${results[0].fname} ${results[0].lname}`;
+            connection.query('UPDATE `information` SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
+                [title, detail, date, pic, type, id_admin, adminName, id],
+                (err, results) => {
+                    if (err) {
+                        console.error('Error in PUT /promotion:', err);
+                        res.status(500).send('Error updating information promotion');
+                    } else {
+                        res.status(200).send(results);
+                    }
+                }
+            );
+        }
+    });
+});
+
 
 //ลงทะเบียนadmin
 app.post('/signup', (req, res) => {
@@ -87,6 +141,38 @@ app.post('/signup', (req, res) => {
     });
 });
 
+//login
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required.' });
+    }
+
+    try {
+        const [rows] = await connection.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+        if (rows.length === 0) {
+            return res.status(401).json({ message: 'Invalid username or password.' });
+        }
+
+        const user = rows[0];
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Invalid username or password.' });
+        }
+
+        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({ message: 'Login successful', token });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.get('/infoadmin', (req, res) => {
     connection.query(
         'SELECT * FROM admin',
@@ -98,6 +184,8 @@ app.get('/infoadmin', (req, res) => {
 
 
 
-app.listen(process.env.PORT || 3004, () => {
-    console.log('CORS-enabled web server listening on port 3004')
+
+
+app.listen(process.env.PORT || 3000, () => {
+    console.log('CORS-enabled web server listening on port 3000')
 })
