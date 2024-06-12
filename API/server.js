@@ -152,7 +152,7 @@ app.post('/login', (req, res) => {
     connection.execute(
         'SELECT * FROM admin WHERE username=?',
         [username],
-        async function(err, results, fields) {
+        async (err, results, fields) => {
             if (err) {
                 console.error('Error in POST /login:', err);
                 return res.status(500).json({ message: 'Error during login' });
@@ -164,21 +164,25 @@ app.post('/login', (req, res) => {
 
             const user = results[0];
 
-            // Compare the provided password with the hashed password from the database
-            const isPasswordValid = await bcrypt.compare(password, user.password);
+            // เปรียบเทียบรหัสผ่านที่ให้มากับรหัสผ่านที่ถูกแฮชในฐานข้อมูล
+            try {
+                const isPasswordValid = await bcrypt.compare(password, user.password);
 
-            if (!isPasswordValid) {
-                return res.status(401).json({ message: 'Invalid username or password.' });
+                if (!isPasswordValid) {
+                    return res.status(401).json({ message: 'Invalid username or password.' });
+                }
+
+                // สร้าง JWT
+                const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+
+                return res.status(200).json({ message: 'Login successful', token });
+            } catch (compareError) {
+                console.error('Error comparing passwords:', compareError);
+                return res.status(500).json({ message: 'Error during login' });
             }
-
-            // Generate JWT
-            const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-
-            res.status(200).json({ message: 'Login successful', token });
         }
     );
 });
-
 
 app.get('/infoadmin', (req, res) => {
     connection.query(
