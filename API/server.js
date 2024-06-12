@@ -151,8 +151,8 @@ app.post('/login', (req, res) => {
     }
 
     connection.execute(
-        'SELECT * FROM admin WHERE username=? AND password=?',
-        [username,password],
+        'SELECT * FROM admin WHERE username=?',
+        [username],
         async (err, results, fields) => {
             if (err) {
                 console.error('Error in POST /login:', err);
