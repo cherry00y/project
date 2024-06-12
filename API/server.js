@@ -145,35 +145,18 @@ app.post('/signup', (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required.' });
-    }
-
-    try {
-        // Query to find the user by username
-        const [rows] = await connection.execute('SELECT * FROM admin WHERE username = ?', [username]);
-
-        if (rows.length === 0) {
-            return res.status(401).json({ message: 'Invalid username or password.' });
+    connection.execute(
+        'SELECT * FROM Register WHERE email=? AND pass=?',
+        [username,password],
+        function(err, results, fields) {
+            if (err) {
+                console.error('Error in POST /register:', err);
+                res.status(500).send('Error Login');
+            } else {
+                res.status(200).send(results);
+            }
         }
-
-        const user = rows[0];
-
-        // Compare the provided password with the hashed password from the database
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid username or password.' });
-        }
-
-        // Generate JWT
-        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-
-        res.status(200).json({ message: 'Login successful', token });
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    );
 });
 
 
