@@ -145,16 +145,36 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required.' });
+    }
+
     connection.execute(
-        'SELECT * FROM admin WHERE username=? AND password=?',
-        [username,password],
-        function(err, results, fields) {
+        'SELECT * FROM admin WHERE username=?',
+        [username],
+        async function(err, results, fields) {
             if (err) {
-                console.error('Error in POST /register:', err);
-                res.status(500).send('Error Login');
-            } else {
-                res.status(200).send(results);
+                console.error('Error in POST /login:', err);
+                return res.status(500).json({ message: 'Error during login' });
             }
+
+            if (results.length === 0) {
+                return res.status(401).json({ message: 'Invalid username or password.' });
+            }
+
+            const user = results[0];
+
+            // Compare the provided password with the hashed password from the database
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+
+            if (!isPasswordValid) {
+                return res.status(401).json({ message: 'Invalid username or password.' });
+            }
+
+            // Generate JWT
+            const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+
+            res.status(200).json({ message: 'Login successful', token });
         }
     );
 });
