@@ -57,8 +57,8 @@ app.post('/promotion', (req, res) => {
 
 // แก้ไข promotion
 app.put('/promotion/:id', (req, res) => {
-    const {id} = req.params;
-    const {title, detail, date, pic, type, id_admin} = req.body;
+    const { id } = req.params;
+    const { title, detail, date, pic, type, id_admin } = req.body;
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
@@ -83,6 +83,7 @@ app.put('/promotion/:id', (req, res) => {
         }
     });
 });
+
 
 
 //ลงทะเบียนadmin
