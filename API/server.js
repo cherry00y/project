@@ -69,7 +69,7 @@ app.put('/promotion/:id', (req, res) => {
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('UPDATE `information` SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
+            connection.query('UPDATE information SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
                 [title, detail, date, pic, type, id_admin, adminName, id],
                 (err, results) => {
                     if (err) {
