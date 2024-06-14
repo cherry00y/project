@@ -207,16 +207,6 @@ app.post('/login', (req, res) => {
     );
 });
 
-app.get('/infoadmin', (req, res) => {
-    connection.query(
-        'SELECT * FROM admin',
-        function (err, results, fields) {
-            res.send(results)
-        }
-    )
-})
-
-
 app.listen(process.env.PORT || 3001, () => {
     console.log('CORS-enabled web server listening on port 3000')
 })
