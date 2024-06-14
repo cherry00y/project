@@ -50,7 +50,7 @@ app.post('/information', (req, res) => {
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('INSERT INTO `information` (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+            connection.query('INSERT INTO `information` title, detail, `date`, pic, `type`, id_admin, created_by, updated_by VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
                 [title, detail, date, pic, type, id_admin, adminName, null],  // updated_by เป็น null สำหรับการเพิ่มข้อมูลครั้งแรก
                 (err, results) => {
                     if (err) {
