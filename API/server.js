@@ -19,7 +19,16 @@ app.get('/', (req, res) => {
 
 //ดึงข้อมูลinformation
 app.get('/promotion', (req,res) =>{
+    const type = 'promrtion';
 
+    connection.query('SELECT title, detail, `date` FROM information WHERE `type` = ?',
+        [type], (err, results) => {
+            if (err) {
+                console.error('Error in GET /promotion:', err);
+                return res.status(500).send('Error fetching promotion information');
+            }
+            return res.status(200).json(results);
+        });
 
 })
 
