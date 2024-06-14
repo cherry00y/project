@@ -38,7 +38,7 @@ app.get('/trivia', (req, res) => {
 
 
 // เพิ่ม information
-app.post('/infoemation', (req, res) => {
+app.post('/information', (req, res) => {
     const {title, detail, date, pic, type, id_admin} = req.body;
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
