@@ -23,12 +23,22 @@ app.get('/promotion', (req,res) =>{
 
 })
 
-app.get('/trivia', (req,res) =>{
+app.get('/trivia', (req, res) => {
+    const type = 'trivia';  // กำหนด type เป็น trivia โดยตรง
 
-})
+    connection.query ('SELECT title, detail, `date` FROM information WHERE `type` = ?', 
+        [type], (err, results) => {
+        if (err) {
+            console.error('Error in GET /trivia:', err);
+            return res.status(500).send('Error fetching trivia information');
+        }
+        return res.status(200).json(results);
+    });
+});
 
-// เพิ่ม promotion
-app.post('/promotion', (req, res) => {
+
+// เพิ่ม information
+app.post('/infoemation', (req, res) => {
     const {title, detail, date, pic, type, id_admin} = req.body;
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
@@ -55,10 +65,11 @@ app.post('/promotion', (req, res) => {
     });
 });
 
-// แก้ไข promotion
-app.put('/promotion/:id', (req, res) => {
+// แก้ไข information
+app.put('/information/:id', (req, res) => {
     const { id } = req.params;
-    const { title, detail, date, pic, type, id_admin } = req.body;
+    const { title, detail, pic, type, id_admin } = req.body;
+    const date = new Date();
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
