@@ -208,6 +208,6 @@ app.get('/infoadmin', (req, res) => {
 })
 
 
-app.listen(process.env.PORT || 3003, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log('CORS-enabled web server listening on port 3000')
 })
