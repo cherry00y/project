@@ -2,7 +2,6 @@ import React, { useEffect, useState }from 'react';
 import Navbar from '../components/Navbar';
 import { MenuItems } from '../components/MenuItems';
 import './DataStyles.css'
-import data from '../data/data.json';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
@@ -20,9 +19,12 @@ function Datatrivia(){
 
     const[news, setNews] = useState([]);
 
-    useEffect(() =>{
-        setNews(data)
-    },[]);
+    useEffect(() => {
+        fetch('http://localhost:3001/trivia')
+            .then(response => response.json())
+            .then(data => setNews(data))
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
 
     return(
         <>
