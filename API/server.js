@@ -80,33 +80,33 @@ app.post('/information', authenticateToken, (req, res) => {
 // แก้ไข information
 app.put('/information/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
-    const { title, detail, pic, type} = req.body;
-    const id_admin = req.user.id;
+    const { title, detail, pic, type } = req.body;
+    const id_admin = req.user.id;  // ดึง id ของผู้ดูแลระบบจาก payload ของโทเค็น
     const date = new Date();
 
-    // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
-            res.status(500).send('Error selecting admin');
+            return res.status(500).send('Error selecting admin');
         } else if (results.length === 0) {
-            res.status(404).send('Admin not found');
+            return res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
             connection.query('UPDATE information SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
                 [title, detail, date, pic, type, id_admin, adminName, id],
                 (err, results) => {
                     if (err) {
-                        console.error('Error in PUT /promotion:', err);
-                        res.status(500).send('Error updating information promotion');
+                        console.error('Error in PUT /information:', err);
+                        return res.status(500).send('Error updating information');
                     } else {
-                        res.status(200).send(results);
+                        return res.status(200).send(results);
                     }
                 }
             );
         }
     });
 });
+
 
 
 
