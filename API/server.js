@@ -5,6 +5,7 @@ require('dotenv').config()
 const app = express()
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 const saltRounds = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -19,7 +20,7 @@ app.get('/', (req, res) => {
 
 //ดึงข้อมูลinformation
 app.get('/promotion', (req,res) =>{
-    const type = 'promrtion';
+    const type = 'promotion';
 
     connection.query('SELECT title, detail, `date` FROM information WHERE `type` = ?',
         [type], (err, results) => {
@@ -47,8 +48,9 @@ app.get('/trivia', (req, res) => {
 
 
 // เพิ่ม information
-app.post('/information', (req, res) => {
-    const { title, detail, date, pic, type, id_admin } = req.body;
+app.post('/information', authenticateToken, (req, res) => {
+    const { title, detail, date, pic, type,} = req.body;
+    const id_admin = req.user.id;
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
@@ -78,7 +80,8 @@ app.post('/information', (req, res) => {
 // แก้ไข information
 app.put('/information/:id', (req, res) => {
     const { id } = req.params;
-    const { title, detail, pic, type, id_admin } = req.body;
+    const { title, detail, pic, type} = req.body;
+    const id_admin = req.user.id;
     const date = new Date();
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
@@ -164,7 +167,6 @@ app.post('/signup', (req, res) => {
 });
 
 //login
-
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -172,10 +174,7 @@ app.post('/login', (req, res) => {
         return res.status(400).json({ message: 'Username and password are required.' });
     }
 
-    connection.execute(
-        'SELECT * FROM admin WHERE username=?',
-        [username],
-        async (err, results, fields) => {
+    connection.execute('SELECT * FROM admin WHERE username=?',[username], async (err, results, fields) => {
             if (err) {
                 console.error('Error in POST /login:', err);
                 return res.status(500).json({ message: 'Error during login' });
@@ -207,6 +206,23 @@ app.post('/login', (req, res) => {
     );
 });
 
-app.listen(process.env.PORT || 3001, () => {
+// Middleware สำหรับยืนยันโทเค็น
+function authenticateToken(req, res, next) {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(401).send('Access Denied');
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).send('Invalid Token');
+        }
+        req.user = user;
+        next();
+    });
+}
+
+app.listen(process.env.PORT || 3000, () => {
     console.log('CORS-enabled web server listening on port 3000')
 })

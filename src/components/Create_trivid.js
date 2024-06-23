@@ -39,6 +39,15 @@ function CreateTrivia(){
                         <input type="file" id="picture" required/>
                     </div>
                 </div>
+                <div class="type-box">
+                    <h3>Type</h3>
+                    <div class="type">
+                        <input type="radio" id="promotion" name="type" value="promotion and information"/>
+                        <label for="promotion">promotion and information</label>
+                        <input type="radio" id="trivia" name="type" value="trivia"/>
+                        <label for="trivia">trivia</label>
+                    </div>
+                </div>
                 
                 <div className="button-container">
                 <button className="button">เพิ่มข้อมูล</button>

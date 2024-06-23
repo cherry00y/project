@@ -31,7 +31,7 @@
     align-items: center;
     justify-content: center; /* จัดให้เนื้อหาอยู่กึ่งกลางทั้งแนวตั้งและแนวนอน */
     background-color: #ffffff;
-    border-radius: 13px;
+    border-radius: 30px;
     padding: 40px 24pc;
     margin: auto 10pc; /* ทำให้ตรงกลางทั้งแนวตั้งและแนวนอน */
     margin-bottom: 30px;
@@ -65,19 +65,20 @@ form{
 
 input{
     width: 90%;
-    height: 80px;
+    height: 60px;
     padding:  10px;
     background-color: #bddbfc;
     border: 1px solid #000;
     font-size: 16px;
-    border-radius: 13px;
+    border-radius: 25px;
     margin-top: 10px;
     color: #6e6e6e;
     text-align: start;   
 }
+
 input[type="file"] {
     background-color: #bddbfc;
-    padding: 36px 10px; 
+    padding: 26px 10px; 
     height: auto;
     color: #6e6e6e;
     text-align: start; 
@@ -92,8 +93,43 @@ label{
     margin-bottom: 5px;
 }
 
+.type-box {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.type-box h3 {
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    margin-right: 20px; /* เพิ่มระยะห่างระหว่างหัวข้อและ radio buttons */
+    margin-left: 30px;
+}
+
+.type {
+    display: flex;
+    column-gap: 20px; /* ลดระยะห่างระหว่างสอง radio buttons */
+    align-items: center; /* จัดตำแหน่งให้ radio buttons และข้อความอยู่ตรงกลางแนวตั้ง */
+}
+
+.type input[type="radio"] {
+    width: 16px; /* กำหนดขนาดของวงกลม */
+    height: 16px; /* กำหนดขนาดของวงกลม */
+    accent-color: rgb(100, 100, 100); /* สีของ radio button เมื่อถูกเลือก */
+    margin-right: 3px; /* ลดระยะห่างระหว่างวงกลมกับข้อความ */
+}
+
+.type label {
+    color: #707070;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
 .button-container {
-    margin-top: 100px;
+    margin-top: 80px;
     display: flex;
     justify-content: center;
 }
