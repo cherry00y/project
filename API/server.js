@@ -78,7 +78,7 @@ app.post('/information', authenticateToken, (req, res) => {
 
 
 // แก้ไข information
-app.put('/information/:id', (req, res) => {
+app.put('/information/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
     const { title, detail, pic, type} = req.body;
     const id_admin = req.user.id;
