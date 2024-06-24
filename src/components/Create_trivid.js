@@ -48,7 +48,7 @@ function CreateTrivia() {
         data.append('type', formData.type);
 
         try {
-            const response = await fetch('http://localhost:3009/information', {
+            const response = await fetch('http://localhost:3010/information', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
