@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 
 // ดึงข้อมูล information
 app.get('/promotion', (req,res) =>{
-    const type = 'promotion';
+    const type = 'promotion and information';
 
     connection.query('SELECT title, detail, `date` FROM infor WHERE `type` = ?',
         [type], (err, results) => {
