@@ -29,33 +29,34 @@ function CreateTrivia() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+      
         const data = new FormData();
         data.append('title', formData.title);
         data.append('detail', formData.detail);
         data.append('date', formData.date);
         data.append('pic', formData.pic);
         data.append('type', formData.type);
-
+      
         try {
-            const response = await fetch('http://localhost:3010/information', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: data
-            });
-
-            if (response.ok) {
-                alert('Information added successfully');
-            } else {
-                alert('Failed to add information');
-            }
+          const response = await fetch('http://localhost:3010/information', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: data
+          });
+      
+          if (response.ok) {
+            alert('Information added successfully');
+          } else {
+            const errorData = await response.json(); // Parse error response if available
+            alert(`Failed to add information: ${errorData.message || 'Unknown error'}`); // Display specific error message
+          }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while adding information');
+          console.error('Error:', error);
+          alert('An error occurred while adding information');
         }
-    };
+      };
 
     return (
         <>
