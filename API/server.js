@@ -52,8 +52,8 @@ app.get('/trivia', (req, res) => {
 
 
 // เพิ่ม information
-app.post('/information', authenticateToken, upload.single('pic'),(req, res) => {
-    const { title, detail, date, type,} = req.body;
+app.post('/information', authenticateToken, upload.single('pic'), (req, res) => {
+    const { title, detail, date, type } = req.body;
     const id_admin = req.user.id;
     const pic = req.file ? req.file.buffer : null;
 
@@ -66,8 +66,7 @@ app.post('/information', authenticateToken, upload.single('pic'),(req, res) => {
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query ('INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [title, detail, date, pic, type, id_admin, adminName, null] ,(err, results) => {
+            connection.query('INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
                 if (err) {
                     console.error('Error in POST /information:', err);
                     res.status(500).send('Error adding information');
@@ -75,7 +74,7 @@ app.post('/information', authenticateToken, upload.single('pic'),(req, res) => {
                     res.status(201).send(results);
                 }
             });
-        };
+        }
     });
 });
 
@@ -209,21 +208,21 @@ app.post('/login', (req, res) => {
 });
 
 // Middleware สำหรับยืนยันโทเค็น
-function authenticateToken(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1];
-
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
         return res.status(403).send('Forbidden: No token provided');
     }
 
-    //jwt.verify(token, JWT_SECRET, (err, user) => {
-    //    if (err) {
-    //        return res.status(403).send('Invalid Token');
-    //   }
-    //    req.user = user;
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).send('Forbidden: Invalid token');
+        }
+        req.user = user;
         next();
-   // });
-}
+    });
+};
 
 app.listen(process.env.PORT || 3008, () => {
     console.log('CORS-enabled web server listening on port 3000')
