@@ -20,6 +20,13 @@ function CreateTrivia() {
         });
     };
 
+    const handleFileChange = (e) => {
+        setFormData({
+            ...formData,
+            pic: e.target.files[0]
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
       
