@@ -8,9 +8,12 @@ const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.use(cors())
 app.use(express.json())
+
 
 const connection = mysql.createConnection(process.env.DATABASE_URL)
 
@@ -48,9 +51,10 @@ app.get('/trivia', (req, res) => {
 
 
 // เพิ่ม information
-app.post('/information', authenticateToken, (req, res) => {
-    const { title, detail, date, pic, type,} = req.body;
+app.post('/information', authenticateToken, upload.single('pic'),(req, res) => {
+    const { title, detail, date, type,} = req.body;
     const id_admin = req.user.id;
+    const pic = req.file ? req.file.buffer : null;
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
