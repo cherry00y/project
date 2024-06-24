@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar';
 import { MenuItems } from '../components/MenuItems';
 import './DataStyles.css'
 import { useNavigate } from 'react-router-dom';
-import data from '../data/data.json';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'; // นำเข้าไอคอนที่ถูกต้อง
 
@@ -20,9 +19,12 @@ function Datapromotion(){
 
     const[news, setNews] = useState([]);
 
-    useEffect(() =>{
-        setNews(data)
-    },[]);
+    useEffect(() => {
+        fetch('http://localhost:3006/promotion')
+            .then(response => response.json())
+            .then(data => setNews(data))
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
 
     return(
         <>
