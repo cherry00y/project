@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { MenuItems } from './MenuItems';
 import './CreateStyles.css';
@@ -11,6 +12,8 @@ function CreateTrivia() {
         pic: null,
         type: ''
     });
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,6 +33,13 @@ function CreateTrivia() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('No token found. Please log in again.');
+            navigate('/login');
+            return;
+        }
+
         const data = new FormData();
         data.append('title', formData.title);
         data.append('detail', formData.detail);
@@ -41,7 +51,7 @@ function CreateTrivia() {
             const response = await fetch('http://localhost:3007/information', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: data
             });
@@ -49,7 +59,8 @@ function CreateTrivia() {
             if (response.ok) {
                 alert('Information added successfully');
             } else {
-                alert('Failed to add information');
+                const errorData = await response.json();
+                alert(`Failed to add information: ${errorData.message}`);
             }
         } catch (error) {
             console.error('Error:', error);
