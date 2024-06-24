@@ -79,7 +79,7 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
+            connection.query('INSERT INTO infor (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
                 if (err) {
                     console.error('Error in POST /information:', err);
                     res.status(500).send('Error adding information');
