@@ -217,14 +217,20 @@ function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    if (token == null) return res.sendStatus(401);
+    if (!token) {
+        return res.status(401).send('Access Denied');
+    }
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
+        if (err) {
+            return res.status(403).send('Invalid Token');
+        }
+        console.log('Decoded user:', user); // เพิ่มบรรทัดนี้เพื่อตรวจสอบ payload ของโทเค็น
         req.user = user;
         next();
     });
 }
+
 
 app.listen(process.env.PORT || 3010, () => {
     console.log('CORS-enabled web server listening on port 3000')
