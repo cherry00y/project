@@ -1,54 +1,67 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { MenuItems } from './MenuItems';
 import './CreateStyles.css';
-import e from "express";
 
 function CreateTrivia() {
-    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        title: '',
+        detail: '',
+        date: '',
+        pic: null,
+        type: ''
+    });
 
-    const handleSubmit = event =>  {
-        event.preventDefault();
-        
-        // Create FormData object to send mixed content (JSON + file)
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("detail", detail);
-        formData.append("date", date);
-        formData.append("type", type);
-        formData.append("pic", picture); // Append the selected file
-        
-        var requestOptions = {
-            method: 'POST',
-            body: formData,
-        };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
-        fetch("http://localhost:3010/information", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            alert(result['message']); // Corrected 'message' spelling
-            if (result['status'] === 'Ok')
-                navigate("/infomation/trivia"); // Use navigate function instead of direct window.location
-        })
-        .catch(error => console.log('error', error));
-    }
+    const handleFileChange = (e) => {
+        setFormData({
+            ...formData,
+            pic: e.target.files[0]
+        });
+    };
 
-    const [title, settitle] = useState('');
-    const [detail, setdetail] = useState('');
-    const [date, setdate] = useState('');
-    const [picture, setpic] = useState(null); // Use null for initial state of file
-    const [type, settype] = useState('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const handleFileChange = event => {
-        setpic(event.target.files[0]); // Set the selected file to state
-    }
+        const data = new FormData();
+        data.append('title', formData.title);
+        data.append('detail', formData.detail);
+        data.append('date', formData.date);
+        data.append('pic', formData.pic);
+        data.append('type', formData.type);
+
+        try {
+            const response = await fetch('http://localhost:3010/information', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: data
+            });
+
+            if (response.ok) {
+                alert('Information added successfully');
+            } else {
+                alert('Failed to add information');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while adding information');
+        }
+    };
 
     return (
         <>
             <Navbar MenuItems={MenuItems} />
             <div className='create-info'>
-                <h3>Create Information</h3>
+                <h3>Create Infomation</h3>
             </div>
             <div className='info-pormo-text'>
                 <h1>การซักและอบผ้า</h1>
@@ -65,8 +78,8 @@ function CreateTrivia() {
                                 type="text"
                                 id="title-infomation"
                                 name="title"
-                                value={title}
-                                onChange={(e) => settitle(e.target.value)}
+                                value={formData.title}
+                                onChange={handleChange}
                                 placeholder="การซักและอบผ้า"
                                 required
                             />
@@ -77,8 +90,8 @@ function CreateTrivia() {
                                 type="text"
                                 id="detail"
                                 name="detail"
-                                value={detail}
-                                onChange={(e) => setdetail(e.target.value)}
+                                value={formData.detail}
+                                onChange={handleChange}
                                 placeholder="รายละเอียด"
                                 required
                             />
@@ -91,8 +104,8 @@ function CreateTrivia() {
                                 type="date"
                                 id="date"
                                 name="date"
-                                value={date}
-                                onChange={(e) => setdate(e.target.value)}
+                                value={formData.date}
+                                onChange={handleChange}
                                 required
                             />
                         </div>
@@ -115,7 +128,8 @@ function CreateTrivia() {
                                 id="promotion"
                                 name="type"
                                 value="promotion and information"
-                                onChange={(e) => settype(e.target.value)}
+                                checked={formData.type === 'promotion and information'}
+                                onChange={handleChange}
                             />
                             <label htmlFor="promotion">promotion and information</label>
                             <input
@@ -123,7 +137,8 @@ function CreateTrivia() {
                                 id="trivia"
                                 name="type"
                                 value="trivia"
-                                onChange={(e) => settype(e.target.value)}
+                                checked={formData.type === 'trivia'}
+                                onChange={handleChange}
                             />
                             <label htmlFor="trivia">trivia</label>
                         </div>
