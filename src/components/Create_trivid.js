@@ -58,6 +58,14 @@ function CreateTrivia() {
 
             if (response.ok) {
                 alert('Information added successfully');
+                // Clear form after successful submission if needed
+                setFormData({
+                    title: '',
+                    detail: '',
+                    date: '',
+                    pic: null,
+                    type: ''
+                });
             } else {
                 const errorData = await response.json();
                 alert(`Failed to add information: ${errorData.message}`);
@@ -72,7 +80,7 @@ function CreateTrivia() {
         <>
             <Navbar MenuItems={MenuItems} />
             <div className='create-info'>
-                <h3>Create Infomation</h3>
+                <h3>Create Information</h3>
             </div>
             <div className='info-pormo-text'>
                 <h1>การซักและอบผ้า</h1>
