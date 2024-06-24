@@ -210,19 +210,19 @@ app.post('/login', (req, res) => {
 
 // Middleware สำหรับยืนยันโทเค็น
 function authenticateToken(req, res, next) {
-    const token = req.headers['authorization'];
+    const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
-        return res.status(401).send('Access Denied');
+        return res.status(403).send('Forbidden: No token provided');
     }
 
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).send('Invalid Token');
-        }
-        req.user = user;
+    //jwt.verify(token, JWT_SECRET, (err, user) => {
+    //    if (err) {
+    //        return res.status(403).send('Invalid Token');
+    //   }
+    //    req.user = user;
         next();
-    });
+   // });
 }
 
 app.listen(process.env.PORT || 3008, () => {

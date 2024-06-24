@@ -20,13 +20,6 @@ function CreateTrivia() {
         });
     };
 
-    const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            pic: e.target.files[0]
-        });
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
       
@@ -38,25 +31,26 @@ function CreateTrivia() {
         data.append('type', formData.type);
       
         try {
-          const response = await fetch('http://localhost:3008/information', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: data
-          });
+            const response = await fetch('http://localhost:3008/information', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: data
+            });
       
-          if (response.ok) {
-            alert('Information added successfully');
-          } else {
-            const errorData = await response.json(); // Parse error response if available
-            alert(`Failed to add information: ${errorData.message || 'Unknown error'}`); // Display specific error message
-          }
+            if (response.ok) {
+                alert('Information added successfully');
+            } else {
+                const errorData = await response.json(); // Parse error response if available
+                alert(`Failed to add information: ${errorData.message || 'Unknown error'}`); // Display specific error message
+            }
         } catch (error) {
-          console.error('Error:', error);
-          alert('An error occurred while adding information');
+            console.error('Error:', error);
+            alert('An error occurred while adding information');
         }
-      };
+    };
+    
 
     return (
         <>
