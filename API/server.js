@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 app.get('/promotion', (req,res) =>{
     const type = 'promotion';
 
-    connection.query('SELECT title, detail, `date` FROM information WHERE `type` = ?',
+    connection.query('SELECT title, detail, `date` FROM infor WHERE `type` = ?',
         [type], (err, results) => {
             if (err) {
                 console.error('Error in GET /promotion:', err);
@@ -55,7 +55,7 @@ app.get('/promotion', (req,res) =>{
 app.get('/trivia', (req, res) => {
     const type = 'trivia';
 
-    connection.query('SELECT title, detail, `date` FROM information WHERE `type` = ?', 
+    connection.query('SELECT title, detail, `date` FROM infor WHERE `type` = ?', 
         [type], (err, results) => {
         if (err) {
             console.error('Error in GET /trivia:', err);
@@ -106,7 +106,7 @@ app.put('/information/:id', authenticateToken, (req, res) => {
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('UPDATE information SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
+            connection.query('UPDATE infor SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
                 [title, detail, date, pic, type, id_admin, adminName, id],
                 (err, results) => {
                     if (err) {
