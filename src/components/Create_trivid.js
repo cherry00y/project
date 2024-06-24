@@ -3,78 +3,45 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { MenuItems } from './MenuItems';
 import './CreateStyles.css';
+import e from "express";
 
 function CreateTrivia() {
-    const [formData, setFormData] = useState({
-        title: '',
-        detail: '',
-        date: '',
-        pic: null,
-        type: ''
-    });
+    const handleSubmit = event =>  {
+        event.preventDefault();
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
 
-    const navigate = useNavigate();
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
+        var raw = JSON.stringify({
+        "title": title,
+        "detail": detail,
+        "date": date,
+        "pic": picture,
+        "type": type,
         });
-    };
 
-    const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            pic: e.target.files[0]
-        });
-    };
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        fetch("http://localhost:3010/information", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            alert(result['massage'])
+            if (result['status'] === 'Ok')
+            window.location.href = "/infomation/trivia"
+        })
+        .catch(error => console.log('error', error));
 
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('No token found. Please log in again.');
-            navigate('/login');
-            return;
-        }
+    }
 
-        const data = new FormData();
-        data.append('title', formData.title);
-        data.append('detail', formData.detail);
-        data.append('date', formData.date);
-        data.append('pic', formData.pic);
-        data.append('type', formData.type);
-
-        try {
-            const response = await fetch('http://localhost:3010/information', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: data
-            });
-
-            if (response.ok) {
-                alert('Information added successfully');
-                // Clear form after successful submission if needed
-                setFormData({
-                    title: '',
-                    detail: '',
-                    date: '',
-                    pic: null,
-                    type: ''
-                });
-            } else {
-                const errorData = await response.json();
-                alert(`Failed to add information: ${errorData.message}`);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while adding information');
-        }
-    };
+    const [title, settitle] = useState('');
+    const [detail, setdetail] = useState('');
+    const [date, setdate] = useState('')
+    const [picture, setpic] = useState('')
+    const [type, settype] = useState('');
 
     return (
         <>
@@ -97,8 +64,7 @@ function CreateTrivia() {
                                 type="text"
                                 id="title-infomation"
                                 name="title"
-                                value={formData.title}
-                                onChange={handleChange}
+                                onChange={(e) => settitle(e.target.value)}
                                 placeholder="การซักและอบผ้า"
                                 required
                             />
@@ -109,8 +75,7 @@ function CreateTrivia() {
                                 type="text"
                                 id="detail"
                                 name="detail"
-                                value={formData.detail}
-                                onChange={handleChange}
+                                onChange={(e) => setdetail(e.target.value)}
                                 placeholder="รายละเอียด"
                                 required
                             />
@@ -123,8 +88,7 @@ function CreateTrivia() {
                                 type="date"
                                 id="date"
                                 name="date"
-                                value={formData.date}
-                                onChange={handleChange}
+                                onChange={(e) => setdate(e.target.value)}
                                 required
                             />
                         </div>
@@ -134,7 +98,7 @@ function CreateTrivia() {
                                 type="file"
                                 id="picture"
                                 name="pic"
-                                onChange={handleFileChange}
+                                onChange={(e) => setpic(e.target.value)}
                                 required
                             />
                         </div>
@@ -147,8 +111,7 @@ function CreateTrivia() {
                                 id="promotion"
                                 name="type"
                                 value="promotion and information"
-                                checked={formData.type === 'promotion and information'}
-                                onChange={handleChange}
+                                onChange={(e) => settype(e.target.value)}
                             />
                             <label htmlFor="promotion">promotion and information</label>
                             <input
@@ -156,8 +119,7 @@ function CreateTrivia() {
                                 id="trivia"
                                 name="type"
                                 value="trivia"
-                                checked={formData.type === 'trivia'}
-                                onChange={handleChange}
+                                onChange={(e) => settype(e.target.value)}
                             />
                             <label htmlFor="trivia">trivia</label>
                         </div>
