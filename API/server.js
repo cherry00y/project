@@ -17,6 +17,23 @@ app.use(express.json())
 
 const connection = mysql.createConnection(process.env.DATABASE_URL)
 
+// Middleware สำหรับยืนยันโทเค็น
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(403).send('Forbidden: No token provided');
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).send('Forbidden: Invalid token');
+        }
+        req.user = user;
+        next();
+    });
+};
+
 app.get('/', (req, res) => {
     res.send('anuthida')
 })
@@ -194,22 +211,7 @@ app.post('/login', (req, res) => {
     );
 });
 
-// Middleware สำหรับยืนยันโทเค็น
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) {
-        return res.status(403).send('Forbidden: No token provided');
-    }
 
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).send('Forbidden: Invalid token');
-        }
-        req.user = user;
-        next();
-    });
-};
 
 app.listen(process.env.PORT || 3008, () => {
     console.log(`CORS-enabled web server listening on port ${process.env.PORT || 3008}`)
