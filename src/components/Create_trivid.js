@@ -6,42 +6,43 @@ import './CreateStyles.css';
 import e from "express";
 
 function CreateTrivia() {
+    const navigate = useNavigate();
+
     const handleSubmit = event =>  {
         event.preventDefault();
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({
-        "title": title,
-        "detail": detail,
-        "date": date,
-        "pic": picture,
-        "type": type,
-        });
-
+        
+        // Create FormData object to send mixed content (JSON + file)
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("detail", detail);
+        formData.append("date", date);
+        formData.append("type", type);
+        formData.append("pic", picture); // Append the selected file
+        
         var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+            method: 'POST',
+            body: formData,
         };
 
         fetch("http://localhost:3010/information", requestOptions)
         .then(response => response.json())
         .then(result => {
-            alert(result['massage'])
+            alert(result['message']); // Corrected 'message' spelling
             if (result['status'] === 'Ok')
-            window.location.href = "/infomation/trivia"
+                navigate("/infomation/trivia"); // Use navigate function instead of direct window.location
         })
         .catch(error => console.log('error', error));
-
     }
 
     const [title, settitle] = useState('');
     const [detail, setdetail] = useState('');
-    const [date, setdate] = useState('')
-    const [picture, setpic] = useState('')
+    const [date, setdate] = useState('');
+    const [picture, setpic] = useState(null); // Use null for initial state of file
     const [type, settype] = useState('');
+
+    const handleFileChange = event => {
+        setpic(event.target.files[0]); // Set the selected file to state
+    }
 
     return (
         <>
@@ -64,6 +65,7 @@ function CreateTrivia() {
                                 type="text"
                                 id="title-infomation"
                                 name="title"
+                                value={title}
                                 onChange={(e) => settitle(e.target.value)}
                                 placeholder="การซักและอบผ้า"
                                 required
@@ -75,6 +77,7 @@ function CreateTrivia() {
                                 type="text"
                                 id="detail"
                                 name="detail"
+                                value={detail}
                                 onChange={(e) => setdetail(e.target.value)}
                                 placeholder="รายละเอียด"
                                 required
@@ -88,6 +91,7 @@ function CreateTrivia() {
                                 type="date"
                                 id="date"
                                 name="date"
+                                value={date}
                                 onChange={(e) => setdate(e.target.value)}
                                 required
                             />
@@ -98,7 +102,7 @@ function CreateTrivia() {
                                 type="file"
                                 id="picture"
                                 name="pic"
-                                onChange={(e) => setpic(e.target.value)}
+                                onChange={handleFileChange}
                                 required
                             />
                         </div>
