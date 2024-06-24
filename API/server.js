@@ -51,14 +51,9 @@ app.get('/trivia', (req, res) => {
 
 // เพิ่ม information
 app.post('/information', authenticateToken, (req, res) => {
-    const { title, detail, date, type,} = req.body;
+    const { title, detail, date, pic, type,} = req.body;
     const id_admin = req.user.id;
-
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).json({ message: 'No files were uploaded.' });
-    }
-
-    const pic = req.files.pic;
+    
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
