@@ -226,6 +226,6 @@ function authenticateToken(req, res, next) {
     });
 }
 
-app.listen(process.env.PORT || 3006, () => {
+app.listen(process.env.PORT || 3010, () => {
     console.log('CORS-enabled web server listening on port 3000')
 })
