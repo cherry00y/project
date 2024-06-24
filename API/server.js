@@ -51,31 +51,36 @@ app.get('/trivia', (req, res) => {
 
 // เพิ่ม information
 app.post('/information', authenticateToken, (req, res) => {
-    const { title, detail, date, pic, type,} = req.body;
+    const { title, detail, date, pic, type } = req.body;
     const id_admin = req.user.id;
-    
+
+    // ตรวจสอบว่าไม่มีฟิลด์ใดเป็นค่าว่าง
+    if (!title || !detail || !date || !pic || !type) {
+        return res.status(400).send('All fields are required');
+    }
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
-            res.status(500).send('Error selecting admin');
+            return res.status(500).send('Error selecting admin');
         } else if (results.length === 0) {
-            res.status(404).send('Admin not found');
+            return res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query ('INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                                 [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
-                if (err) {
-                    console.error('Error in POST /information:', err);
-                    res.status(500).send('Error adding information');
-                } else {
-                    res.status(201).send(results);
-                }
-            });
+            connection.query('INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
+                    if (err) {
+                        console.error('Error in POST /information:', err);
+                        return res.status(500).send('Error adding information');
+                    } else {
+                        return res.status(201).send('Information added successfully');
+                    }
+                });
         }
     });
 });
+
 
 
 // แก้ไข information
