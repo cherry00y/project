@@ -15,14 +15,13 @@ const upload = multer({ storage: storage });
 app.use(cors())
 app.use(express.json())
 
-
 const connection = mysql.createConnection(process.env.DATABASE_URL)
 
 app.get('/', (req, res) => {
     res.send('anuthida')
 })
 
-//ดึงข้อมูลinformation
+// ดึงข้อมูล information
 app.get('/promotion', (req,res) =>{
     const type = 'promotion';
 
@@ -34,13 +33,12 @@ app.get('/promotion', (req,res) =>{
             }
             return res.status(200).json(results);
         });
-
 })
 
 app.get('/trivia', (req, res) => {
-    const type = 'trivia';  // กำหนด type เป็น trivia โดยตรง
+    const type = 'trivia';
 
-    connection.query ('SELECT title, detail, `date` FROM information WHERE `type` = ?', 
+    connection.query('SELECT title, detail, `date` FROM information WHERE `type` = ?', 
         [type], (err, results) => {
         if (err) {
             console.error('Error in GET /trivia:', err);
@@ -50,14 +48,12 @@ app.get('/trivia', (req, res) => {
     });
 });
 
-
 // เพิ่ม information
 app.post('/information', authenticateToken, upload.single('pic'), (req, res) => {
     const { title, detail, date, type } = req.body;
     const id_admin = req.user.id;
     const pic = req.file ? req.file.buffer : null;
 
-    // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
@@ -85,7 +81,6 @@ app.put('/information/:id', authenticateToken, (req, res) => {
     const id_admin = req.user.id;
     const date = new Date();
 
-    // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
@@ -109,13 +104,10 @@ app.put('/information/:id', authenticateToken, (req, res) => {
     });
 });
 
-
-
-//ลงทะเบียนadmin
+// ลงทะเบียน admin
 app.post('/signup', (req, res) => {
     const { fname, lname, phone, username, password } = req.body;
 
-    // ตรวจสอบการใช้ phone ซ้ำ
     connection.query('SELECT * FROM `admin` WHERE `phone` = ?', [phone], (err, results) => {
         if (err) {
             console.error('Error checking phone:', err);
@@ -128,7 +120,6 @@ app.post('/signup', (req, res) => {
             return;
         }
 
-        // ตรวจสอบการใช้ username ซ้ำ
         connection.query('SELECT * FROM `admin` WHERE `username` = ?', [username], (err, results) => {
             if (err) {
                 console.error('Error checking username:', err);
@@ -141,7 +132,6 @@ app.post('/signup', (req, res) => {
                 return;
             }
 
-            // แฮชรหัสผ่านก่อนเก็บลงฐานข้อมูล
             bcrypt.hash(password, saltRounds, (err, hash) => {
                 if (err) {
                     console.error('Error hashing password:', err);
@@ -149,7 +139,6 @@ app.post('/signup', (req, res) => {
                     return;
                 }
 
-                // แทรกข้อมูลลงฐานข้อมูล
                 connection.query(
                     'INSERT INTO `admin` (`fname`, `lname`, `phone`, `username`, `password`) VALUES (?, ?, ?, ?, ?)',
                     [fname, lname, phone, username, hash],
@@ -167,7 +156,7 @@ app.post('/signup', (req, res) => {
     });
 });
 
-//login
+// login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -187,7 +176,6 @@ app.post('/login', (req, res) => {
 
             const user = results[0];
 
-            // เปรียบเทียบรหัสผ่านที่ให้มากับรหัสผ่านที่ถูกแฮชในฐานข้อมูล
             try {
                 const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -195,7 +183,6 @@ app.post('/login', (req, res) => {
                     return res.status(401).json({ message: 'Invalid username or password.' });
                 }
 
-                // สร้าง JWT
                 const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
                 return res.status(200).json({ message: 'Login successful', token });
@@ -215,7 +202,7 @@ const authenticateToken = (req, res, next) => {
         return res.status(403).send('Forbidden: No token provided');
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).send('Forbidden: Invalid token');
         }
@@ -225,5 +212,5 @@ const authenticateToken = (req, res, next) => {
 };
 
 app.listen(process.env.PORT || 3008, () => {
-    console.log('CORS-enabled web server listening on port 3000')
+    console.log(`CORS-enabled web server listening on port ${process.env.PORT || 3008}`)
 })
