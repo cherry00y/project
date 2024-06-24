@@ -47,10 +47,18 @@ app.get('/trivia', (req, res) => {
 });
 
 
+
+
 // เพิ่ม information
 app.post('/information', authenticateToken, (req, res) => {
-    const { title, detail, date, pic, type,} = req.body;
+    const { title, detail, date, type,} = req.body;
     const id_admin = req.user.id;
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).json({ message: 'No files were uploaded.' });
+    }
+
+    const pic = req.files.pic;
 
     // ดึงชื่อของ admin จากตาราง admin โดยใช้ id_admin
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
@@ -61,10 +69,8 @@ app.post('/information', authenticateToken, (req, res) => {
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            const sql = 'INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            const values = [title, detail, date, pic, type, id_admin, adminName, null]; // updated_by เป็น null สำหรับการเพิ่มข้อมูลครั้งแรก
-
-            connection.query(sql, values, (err, results) => {
+            connection.query ('INSERT INTO information (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                 [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
                 if (err) {
                     console.error('Error in POST /information:', err);
                     res.status(500).send('Error adding information');
