@@ -15,7 +15,7 @@ function Edittrivia(){
     const [type, setType] = useState('');
 
     useEffect(() => {
-        axios.get(`http://localhost:3008/information/${id}`)
+        axios.get(`http://localhost:3005/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
