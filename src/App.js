@@ -25,7 +25,7 @@ function App() {
           <Route path="/create/infomation" element={<CreateInfo/>}/>
           <Route path="/create/trivia" element={<CreateTrivia/>}/>
           <Route path="/edit/infomation" element={<EditInfo/>}/>
-          <Route path="/edit/trivia" element={<Edittrivia/>}/>
+          <Route path="/edit/trivia/:id" element={<Edittrivia/>}/>
         </Routes>
       </div>
     </Router>
