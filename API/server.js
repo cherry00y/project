@@ -94,27 +94,18 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
 //get information id 
 app.get('/information/:id', (req, res) => {
     const { id } = req.params;
-    console.log(`Fetching information for id: ${id}`);  // Log id
+
     connection.query('SELECT title, detail, `date`, pic, `type` FROM infor WHERE id = ?', [id], (err, results) => {
         if (err) {
             console.error('Error in GET /information/:id:', err);
             return res.status(500).json({ error: 'Error fetching information' });
         }
-        console.log(`Results: ${JSON.stringify(results)}`);  // Log results
-        if (results.length > 0) { 
-            const info = results[0];
-            if (info.pic) {
-                info.pic = Buffer.from(info.pic).toString('base64');
-            }
-            res.json(info);
-        } else {
-            res.status(404).send('Information not found');
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Information not found' });
         }
+        return res.status(200).json(results[0]);
     });
 });
-
-
-
 
 // แก้ไข information
 app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) => {
