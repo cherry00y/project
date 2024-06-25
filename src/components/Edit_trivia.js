@@ -16,7 +16,7 @@ function Edittrivia(){
 
 
     useEffect(() => {
-        axios.get(`http://localhost:3005/information/${id}`)
+        axios.get(`http://localhost:3006/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
@@ -40,7 +40,7 @@ function Edittrivia(){
         formData.append('pic', pic);
         formData.append('type', type);
 
-        axios.put(`http://localhost:3008/information/${id}`, formData, {
+        axios.put(`http://localhost:3006/information/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`

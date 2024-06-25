@@ -15,7 +15,7 @@ function EditInfo() {
     const [type, setType] = useState('');
 
     useEffect(() => {
-        axios.get(`http://localhost:3005/information/${id}`)
+        axios.get(`http://localhost:3006/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
@@ -40,7 +40,7 @@ function EditInfo() {
         formData.append('pic', pic);
         formData.append('type', type);
 
-        axios.put(`http://localhost:3005/information/${id}`, formData, {
+        axios.put(`http://localhost:3006/information/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
