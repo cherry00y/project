@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 app.get('/promotion', (req,res) =>{
     const type = 'promotion and information';
 
-    connection.query('SELECT title, detail, `date` FROM infor WHERE `type` = ?',
+    connection.query('SELECT id,title, detail, `date` FROM infor WHERE `type` = ?',
         [type], (err, results) => {
             if (err) {
                 console.error('Error in GET /promotion:', err);
@@ -55,7 +55,7 @@ app.get('/promotion', (req,res) =>{
 app.get('/trivia', (req, res) => {
     const type = 'trivia';
 
-    connection.query('SELECT title, detail, `date` FROM infor WHERE `type` = ?', 
+    connection.query('SELECT id,title, detail, `date` FROM infor WHERE `type` = ?', 
         [type], (err, results) => {
         if (err) {
             console.error('Error in GET /trivia:', err);
