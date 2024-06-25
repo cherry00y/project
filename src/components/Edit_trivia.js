@@ -109,6 +109,29 @@ function Edittrivia(){
                             />
                         </div>
                     </div>
+                    <div class="type-box">
+                        <h3>Type</h3>
+                        <div class="type">
+                            <input 
+                            type="radio" 
+                            id="promotion" 
+                            name="type" 
+                            value="promotion and information"
+                            checked={type === 'promotion and information'}
+                            onChange={(e) => setType(e.target.value)}
+                            />
+                            <label for="promotion">promotion and information</label>
+                            <input 
+                            type="radio" 
+                            id="trivia" 
+                            name="type" 
+                            value="trivia"
+                            checked={type === 'trivia'}
+                            onChange={(e) => setType(e.target.value)}
+                            />
+                            <label for="trivia">trivia</label>
+                        </div>
+                    </div>
                     <div className="button-container">
                         <button className="button" type="submit">เพิ่มข้อมูล</button>
                     </div>

@@ -13,8 +13,9 @@ function Datapromotion(){
         navigate('/create/infomation')
     }
 
-    const EditClick = () =>{
-        navigate('/edit/infomation')
+    const editClick = (id) =>{
+        console.log("Navigating to edit page with ID:", id);
+        navigate(`/edit/infomation/${id}`)
     }
 
     const[news, setNews] = useState([]);
@@ -22,7 +23,10 @@ function Datapromotion(){
     useEffect(() => {
         fetch('http://localhost:3005/promotion')
             .then(response => response.json())
-            .then(data => setNews(data))
+            .then(data => {
+                console.log("Fetched data:", data);
+                setNews(data);
+            })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
@@ -48,7 +52,7 @@ function Datapromotion(){
                             </div>
                             <p>
                                 {new Date(item.date).toLocaleDateString('th-TH')} 
-                                <FontAwesomeIcon icon={faPenToSquare} onClick={EditClick}/>
+                                <FontAwesomeIcon icon={faPenToSquare} onClick={() => editClick(item.id)} />
                             </p>  
                         </div>
                     </div>
