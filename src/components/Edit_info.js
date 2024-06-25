@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import { MenuItems } from '../components/MenuItems';
 import './CreateStyles.css';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
 function EditInfo() {
-    const { id } = useParams(); // Get the ID from the URL
+    const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
@@ -15,15 +15,13 @@ function EditInfo() {
     const [type, setType] = useState('');
 
     useEffect(() => {
-        // Fetch existing information data
-        axios.get(`http://localhost:3005/information/${id}`)
+        axios.get(`http://localhost:3008/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
                 setDetail(info.detail);
                 setDate(new Date(info.date).toISOString().substr(0, 10));
                 setType(info.type);
-                // Assuming pic is a URL or base64 encoded string
                 setPic(info.pic);
             })
             .catch(error => {
@@ -41,15 +39,15 @@ function EditInfo() {
         formData.append('pic', pic);
         formData.append('type', type);
 
-        axios.put(`http://localhost:3005/information/${id}`, formData, {
+        axios.put(`http://localhost:3008/information/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/datatrivia'); // Redirect to datatrivia page after successful update
+            navigate('/datatrivia');
         })
         .catch(error => {
             console.error('Error updating information:', error);

@@ -95,7 +95,7 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
 app.get('/information/:id', (req, res) => {
     const { id } = req.params;
 
-    connection.query('SELECT title, detail, `date`, pic, `type` FROM information WHERE id_info = ?', [id], (err, results) => {
+    connection.query('SELECT title, detail, `date`, pic, `type` FROM infor WHERE id = ?', [id], (err, results) => {
         if (err) {
             console.error('Error in GET /information/:id:', err);
             return res.status(500).json({ error: 'Error fetching information' });
@@ -123,7 +123,7 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('UPDATE infor SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id_info = ?',
+            connection.query('UPDATE infor SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id = ?',
                 [title, detail, date, pic, type, id_admin, adminName, id],
                 (err, results) => {
                     if (err) {
