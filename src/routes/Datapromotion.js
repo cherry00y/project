@@ -20,7 +20,7 @@ function Datapromotion(){
     const[news, setNews] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3004/promotion')
+        fetch('http://localhost:3005/promotion')
             .then(response => response.json())
             .then(data => setNews(data))
             .catch(error => console.error('Error fetching data:', error));

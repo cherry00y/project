@@ -16,7 +16,7 @@ function EditInfo() {
 
     useEffect(() => {
         // Fetch existing information data
-        axios.get(`http://localhost:3004/information/${id}`)
+        axios.get(`http://localhost:3005/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
@@ -41,7 +41,7 @@ function EditInfo() {
         formData.append('pic', pic);
         formData.append('type', type);
 
-        axios.put(`http://localhost:3004/information/${id}`, formData, {
+        axios.put(`http://localhost:3005/information/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
