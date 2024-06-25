@@ -14,6 +14,7 @@ function EditInfo() {
     const [pic, setPic] = useState(null);
     const [picUrl, setPicUrl] = useState('');
     const [type, setType] = useState('');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         axios.get(`http://localhost:3005/information/${id}`)
@@ -26,12 +27,13 @@ function EditInfo() {
                 if (info.pic) {
                     setPicUrl(`data:image/jpeg;base64,${info.pic}`);
                 }
+                setError(null);
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
+                setError('Error fetching information: ' + error.response.data);
             });
     }, [id]);
-    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -55,6 +57,7 @@ function EditInfo() {
         })
         .catch(error => {
             console.error('Error updating information:', error);
+            setError('Error updating information: ' + error.response.data);
         });
     };
 
@@ -71,6 +74,7 @@ function EditInfo() {
                 <div className="title-text">
                     <h2>wonder why wonder wash</h2>
                 </div>
+                {error && <div className="error">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="row1">
                         <div className="input-group">
@@ -118,9 +122,9 @@ function EditInfo() {
                             )}
                         </div>
                     </div>
-                    <div class="type-box">
+                    <div className="type-box">
                         <h3>Type</h3>
-                        <div class="type">
+                        <div className="type">
                             <input 
                             type="radio" 
                             id="promotion" 
@@ -129,7 +133,7 @@ function EditInfo() {
                             checked={type === 'promotion and information'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label for="promotion">promotion and information</label>
+                            <label htmlFor="promotion">promotion and information</label>
                             <input 
                             type="radio" 
                             id="trivia" 
@@ -138,7 +142,7 @@ function EditInfo() {
                             checked={type === 'trivia'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label for="trivia">trivia</label>
+                            <label htmlFor="trivia">trivia</label>
                         </div>
                     </div>
                     <div className="button-container">

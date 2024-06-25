@@ -92,6 +92,7 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
 });
 
 //get information id 
+//get information id 
 app.get('/information/:id', (req, res) => {
     const { id } = req.params;
 
@@ -100,8 +101,8 @@ app.get('/information/:id', (req, res) => {
             console.error('Error in GET /information/:id:', err);
             return res.status(500).json({ error: 'Error fetching information' });
         }
-        if (res.length > 0) {
-            const info = res[0];
+        if (results.length > 0) {
+            const info = results[0];
             if (info.pic) {
                 info.pic = Buffer.from(info.pic).toString('base64');
             }
@@ -111,6 +112,7 @@ app.get('/information/:id', (req, res) => {
         }
     });
 });
+
 
 // แก้ไข information
 app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) => {
