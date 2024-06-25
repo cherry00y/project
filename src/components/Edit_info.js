@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Navbar from './Navbar';
-import { MenuItems } from './MenuItems';
+import Navbar from '../components/Navbar';
+import { MenuItems } from '../components/MenuItems';
 import './CreateStyles.css';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import axios from 'axios'; // Import axios
+import { useParams, useNavigate } from 'react-router-dom';
 
 function EditInfo() {
-    const { id } = useParams(); // Assuming you are using react-router to get the ID from the URL
+    const { id } = useParams(); // Get the ID from the URL
+    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
     const [date, setDate] = useState('');
@@ -48,7 +49,7 @@ function EditInfo() {
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            // Redirect or show success message
+            navigate('/datatrivia'); // Redirect to datatrivia page after successful update
         })
         .catch(error => {
             console.error('Error updating information:', error);
