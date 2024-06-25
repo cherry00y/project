@@ -12,9 +12,7 @@ function EditInfo() {
     const [detail, setDetail] = useState('');
     const [date, setDate] = useState('');
     const [pic, setPic] = useState(null);
-    const [picUrl, setPicUrl] = useState('');
     const [type, setType] = useState('');
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         axios.get(`http://localhost:3005/information/${id}`)
@@ -24,16 +22,13 @@ function EditInfo() {
                 setDetail(info.detail);
                 setDate(new Date(info.date).toISOString().substr(0, 10));
                 setType(info.type);
-                if (info.pic) {
-                    setPicUrl(`data:image/jpeg;base64,${info.pic}`);
-                }
-                setError(null);
+                setPic(info.pic);
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
-                setError('Error fetching information: ' + error.response.data);
             });
     }, [id]);
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -57,7 +52,6 @@ function EditInfo() {
         })
         .catch(error => {
             console.error('Error updating information:', error);
-            setError('Error updating information: ' + error.response.data);
         });
     };
 
@@ -74,7 +68,6 @@ function EditInfo() {
                 <div className="title-text">
                     <h2>wonder why wonder wash</h2>
                 </div>
-                {error && <div className="error">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="row1">
                         <div className="input-group">
@@ -115,16 +108,11 @@ function EditInfo() {
                                 id="picture" 
                                 onChange={(e) => setPic(e.target.files[0])} 
                             />
-                            {picUrl && (
-                                <div className="image-preview">
-                                    <img src={picUrl} alt="Current" />
-                                </div>
-                            )}
                         </div>
                     </div>
-                    <div className="type-box">
+                    <div class="type-box">
                         <h3>Type</h3>
-                        <div className="type">
+                        <div class="type">
                             <input 
                             type="radio" 
                             id="promotion" 
@@ -133,7 +121,7 @@ function EditInfo() {
                             checked={type === 'promotion and information'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label htmlFor="promotion">promotion and information</label>
+                            <label for="promotion">promotion and information</label>
                             <input 
                             type="radio" 
                             id="trivia" 
@@ -142,7 +130,7 @@ function EditInfo() {
                             checked={type === 'trivia'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label htmlFor="trivia">trivia</label>
+                            <label for="trivia">trivia</label>
                         </div>
                     </div>
                     <div className="button-container">
