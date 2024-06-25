@@ -100,10 +100,15 @@ app.get('/information/:id', (req, res) => {
             console.error('Error in GET /information/:id:', err);
             return res.status(500).json({ error: 'Error fetching information' });
         }
-        if (results.length === 0) {
-            return res.status(404).json({ error: 'Information not found' });
+        if (res.length > 0) {
+            const info = res[0];
+            if (info.pic) {
+                info.pic = Buffer.from(info.pic).toString('base64');
+            }
+            res.json(info);
+        } else {
+            res.status(404).send('Information not found');
         }
-        return res.status(200).json(results[0]);
     });
 });
 

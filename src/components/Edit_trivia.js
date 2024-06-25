@@ -12,7 +12,9 @@ function Edittrivia(){
     const [detail, setDetail] = useState('');
     const [date, setDate] = useState('');
     const [pic, setPic] = useState(null);
+    const [picUrl, setPicUrl] = useState('');
     const [type, setType] = useState('');
+
 
     useEffect(() => {
         axios.get(`http://localhost:3005/information/${id}`)
@@ -21,8 +23,10 @@ function Edittrivia(){
                 setTitle(info.title);
                 setDetail(info.detail);
                 setDate(new Date(info.date).toISOString().substr(0, 10));
+                if (info.pic) {
+                    setPicUrl(`data:image/jpeg;base64,${info.pic}`);
+                }
                 setType(info.type);
-                setPic(info.pic);
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
@@ -105,8 +109,14 @@ function Edittrivia(){
                             <input 
                                 type="file" 
                                 id="picture" 
+                                accept="image/*" 
                                 onChange={(e) => setPic(e.target.files[0])} 
                             />
+                            {picUrl && (
+                                <div className="image-preview">
+                                    <img src={picUrl} alt="Current" />
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div class="type-box">

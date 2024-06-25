@@ -12,6 +12,7 @@ function EditInfo() {
     const [detail, setDetail] = useState('');
     const [date, setDate] = useState('');
     const [pic, setPic] = useState(null);
+    const [picUrl, setPicUrl] = useState('');
     const [type, setType] = useState('');
 
     useEffect(() => {
@@ -22,12 +23,15 @@ function EditInfo() {
                 setDetail(info.detail);
                 setDate(new Date(info.date).toISOString().substr(0, 10));
                 setType(info.type);
-                setPic(info.pic);
+                if (info.pic) {
+                    setPicUrl(`data:image/jpeg;base64,${info.pic}`);
+                }
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
             });
     }, [id]);
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -47,7 +51,7 @@ function EditInfo() {
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/datatrivia');
+            navigate('/infomation/promotion');
         })
         .catch(error => {
             console.error('Error updating information:', error);
@@ -107,6 +111,11 @@ function EditInfo() {
                                 id="picture" 
                                 onChange={(e) => setPic(e.target.files[0])} 
                             />
+                            {picUrl && (
+                                <div className="image-preview">
+                                    <img src={picUrl} alt="Current" />
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div class="type-box">
