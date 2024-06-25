@@ -15,7 +15,7 @@ function Datapromotion(){
 
     const editClick = (id) =>{
         console.log("Navigating to edit page with ID:", id);
-        navigate(`/edit/infomation/${id}`)
+        navigate(`/edit/infomation/${id}`);
     }
 
     const[news, setNews] = useState([]);
