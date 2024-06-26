@@ -94,6 +94,30 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
 });
 
 //get information id 
+
+app.get('/information/:id', (req, res) => {
+    const { id } = req.params;
+
+    connection.query('SELECT title, detail, `date`, pic, `type` FROM infor WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            console.error('Error in GET /information/:id:', err);
+            return res.status(500).json({ error: 'Error fetching information' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Information not found' });
+        }
+
+        const info = results[0];
+
+        // Convert LONGBLOB data to Base64 string
+        const base64Image = Buffer.from(info.pic).toString('base64');
+
+        info.base64Image = base64Image; // Add Base64 encoded image to info object
+
+        return res.status(200).json(info);
+    });
+});
+/*
 app.get('/information/:id', (req, res) => {
     const { id } = req.params;
 
@@ -107,7 +131,7 @@ app.get('/information/:id', (req, res) => {
         }
         return res.status(200).json(results[0]);
     });
-});
+});*/
 
 // แก้ไข information
 app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) => {
