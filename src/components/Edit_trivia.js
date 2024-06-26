@@ -11,7 +11,7 @@ function Edittrivia(){
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
     const [date, setDate] = useState('');
-    const [pic, setPic] = useState(null);
+    const [pic, setPic] = useState('');
     const [type, setType] = useState('');
 
 
