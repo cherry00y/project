@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import { MenuItems } from '../components/MenuItems';
-import './CreateStyles.css';
+import React, { useEffect, useState } from "react";
+import Navbar from './Navbar';
+import { MenuItems } from './MenuItems';
+import './CreateStyles.css'
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function EditInfo() {
+function EditInfo(){
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
@@ -14,6 +14,7 @@ function EditInfo() {
     const [pic, setPic] = useState('');
     const [type, setType] = useState('');
 
+
     useEffect(() => {
         axios.get(`http://localhost:3006/information/${id}`)
             .then(response => {
@@ -21,14 +22,13 @@ function EditInfo() {
                 setTitle(info.title);
                 setDetail(info.detail);
                 setDate(new Date(info.date).toISOString().substr(0, 10));
-                setType(info.type);
                 setPic(info.pic);
+                setType(info.type);
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
             });
     }, [id]);
-    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -48,7 +48,7 @@ function EditInfo() {
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/infomation/promotion');
+            navigate('/datatrivia');
         })
         .catch(error => {
             console.error('Error updating information:', error);
@@ -106,6 +106,7 @@ function EditInfo() {
                             <input 
                                 type="file" 
                                 id="picture" 
+                                accept="image/*" 
                                 onChange={(e) => setPic(e.target.files[0])} 
                             />
                         </div>
@@ -141,5 +142,4 @@ function EditInfo() {
         </>
     );
 }
-
 export default EditInfo;
