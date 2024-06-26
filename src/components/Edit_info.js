@@ -1,34 +1,42 @@
-import React, { useEffect, useState } from "react";
-import Navbar from './Navbar';
-import { MenuItems } from './MenuItems';
-import './CreateStyles.css'
+import React, { useEffect, useState } from 'react';
+import Navbar from '../components/Navbar';
+import { MenuItems } from '../components/MenuItems';
+import './CreateStyles.css';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function EditInfo(){
+function EditInfo() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
     const [date, setDate] = useState('');
-    const [pic, setPic] = useState('');
+    const [pic, setPic] = useState(null);
     const [type, setType] = useState('');
-
+    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3006/information/${id}`)
+        axios.get(`http://localhost:3008/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
                 setDetail(info.detail);
                 setDate(new Date(info.date).toISOString().substr(0, 10));
-                setPic(info.pic);
                 setType(info.type);
+                if (info.pic) {
+                    setPreview(`data:image/jpeg;base64,${Buffer.from(info.pic).toString('base64')}`);
+                }
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
             });
     }, [id]);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setPic(file);
+        setPreview(URL.createObjectURL(file));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -40,7 +48,7 @@ function EditInfo(){
         formData.append('pic', pic);
         formData.append('type', type);
 
-        axios.put(`http://localhost:3006/information/${id}`, formData, {
+        axios.put(`http://localhost:3008/information/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -48,7 +56,7 @@ function EditInfo(){
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/datatrivia');
+            navigate('/infomation/promotion');
         })
         .catch(error => {
             console.error('Error updating information:', error);
@@ -106,14 +114,14 @@ function EditInfo(){
                             <input 
                                 type="file" 
                                 id="picture" 
-                                accept="image/*" 
-                                onChange={(e) => setPic(e.target.files[0])} 
+                                onChange={handleFileChange} 
                             />
+                            {preview && <img src={preview} alt="Preview" width="200" />}
                         </div>
                     </div>
-                    <div class="type-box">
+                    <div className="type-box">
                         <h3>Type</h3>
-                        <div class="type">
+                        <div className="type">
                             <input 
                             type="radio" 
                             id="promotion" 
@@ -122,7 +130,7 @@ function EditInfo(){
                             checked={type === 'promotion and information'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label for="promotion">promotion and information</label>
+                            <label htmlFor="promotion">promotion and information</label>
                             <input 
                             type="radio" 
                             id="trivia" 
@@ -131,7 +139,7 @@ function EditInfo(){
                             checked={type === 'trivia'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label for="trivia">trivia</label>
+                            <label htmlFor="trivia">trivia</label>
                         </div>
                     </div>
                     <div className="button-container">
@@ -142,4 +150,5 @@ function EditInfo(){
         </>
     );
 }
+
 export default EditInfo;

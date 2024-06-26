@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
