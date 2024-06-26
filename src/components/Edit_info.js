@@ -24,7 +24,7 @@ function EditInfo() {
                 setDate(new Date(info.date).toISOString().substr(0, 10));
                 setType(info.type);
                 if (info.pic) {
-                    setPreview(`data:image/jpeg;base64,${Buffer.from(info.pic).toString('base64')}`);
+                    setPreview(`data:image/jpeg;base64,${info.pic}`);
                 }
             })
             .catch(error => {
