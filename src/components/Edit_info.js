@@ -13,7 +13,6 @@ function EditInfo() {
     const [date, setDate] = useState('');
     const [pic, setPic] = useState(null);
     const [type, setType] = useState('');
-    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
         axios.get(`http://localhost:3006/information/${id}`)
@@ -24,18 +23,12 @@ function EditInfo() {
                 setDate(new Date(info.date).toISOString().substr(0, 10));
                 setType(info.type);
                 setPic(info.pic);
-                setPreview(`http://localhost:3006/uploads/${info.pic}`);
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
             });
     }, [id]);
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setPic(file);
-        setPreview(URL.createObjectURL(file));
-    };
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -113,14 +106,13 @@ function EditInfo() {
                             <input 
                                 type="file" 
                                 id="picture" 
-                                onChange={handleFileChange} 
+                                onChange={(e) => setPic(e.target.files[0])} 
                             />
-                            {preview && <img src={preview} alt="Preview" width="200" />}
                         </div>
                     </div>
-                    <div className="type-box">
+                    <div class="type-box">
                         <h3>Type</h3>
-                        <div className="type">
+                        <div class="type">
                             <input 
                             type="radio" 
                             id="promotion" 
@@ -129,7 +121,7 @@ function EditInfo() {
                             checked={type === 'promotion and information'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label htmlFor="promotion">promotion and information</label>
+                            <label for="promotion">promotion and information</label>
                             <input 
                             type="radio" 
                             id="trivia" 
@@ -138,7 +130,7 @@ function EditInfo() {
                             checked={type === 'trivia'}
                             onChange={(e) => setType(e.target.value)}
                             />
-                            <label htmlFor="trivia">trivia</label>
+                            <label for="trivia">trivia</label>
                         </div>
                     </div>
                     <div className="button-container">
