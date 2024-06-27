@@ -16,7 +16,7 @@ function EditInfo() {
     const [preview, setPreview] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/information/${id}`)
+        axios.get(`http://localhost:3003/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
