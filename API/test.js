@@ -1,22 +1,32 @@
-const express = require('express')
+const express = require('express');
 const multer = require('multer');
-const cors = require('cors')
-const mysql = require('mysql2')
-require('dotenv').config()
-const app = express()
+const cors = require('cors');
+const mysql = require('mysql2');
+require('dotenv').config();
+
+const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // กำหนดโฟลเดอร์ที่จะเก็บไฟล์ภาพ
+        cb(null, './uploads');
+    },
+    filename: function (req, file, cb) {
+        // กำหนดชื่อของไฟล์ภาพ
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
 const upload = multer({ storage: storage });
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-const connection = mysql.createConnection(process.env.DATABASE_URL)
+const connection = mysql.createConnection(process.env.DATABASE_URL);
 
 // Middleware สำหรับยืนยันโทเค็น
 const authenticateToken = (req, res, next) => {
@@ -68,9 +78,9 @@ app.get('/trivia', (req, res) => {
 
 // เพิ่ม information
 app.post('/information', authenticateToken, upload.single('pic'), (req, res) => {
-    const { title, detail, type } = req.body;  // ไม่ต้องรับ date จาก body เพราะจะถูกกำหนดโดยอัตโนมัติ
+    const { title, detail, type } = req.body;
     const id_admin = req.user.id;
-    const pic = req.file ? req.file.filename : null;  // ใช้ filename เพื่อเก็บชื่อไฟล์รูปภาพ
+    const pic = req.file ? req.file.filename : null;
 
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
@@ -82,14 +92,15 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
             const adminName = `${results[0].fname} ${results[0].lname}`;
             connection.query(
                 'INSERT INTO posts (title, detail, `date`, picture, `type`, id_admin, create_by, update_by) VALUES (?, ?, DEFAULT, ?, ?, ?, ?, ?)', 
-                [title, detail, pic, type, id_admin, adminName, adminName], (err, results) => {  // ใช้ DEFAULT สำหรับ date เพื่อให้ MySQL กำหนดค่าโดยอัตโนมัติ
-                if (err) {
-                    console.error('Error in POST /information:', err);
-                    return res.status(500).json({ error: 'Error adding information' });
-                } else {
-                    return res.status(201).json({ message: 'Information added successfully', results });
+                [title, detail, pic, type, id_admin, adminName, null], (err, results) => {
+                    if (err) {
+                        console.error('Error in POST /information:', err);
+                        return res.status(500).json({ error: 'Error adding information' });
+                    } else {
+                        return res.status(201).json({ message: 'Information added successfully', results });
+                    }
                 }
-            });
+            );
         }
     });
 });
