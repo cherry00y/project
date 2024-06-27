@@ -38,7 +38,9 @@ function Signup() {
       }
 
       // Signup successful, handle success (e.g., redirect to login page)
+      alert('Information added successfully');
       console.log('Signup successful!');
+      navigator('/');
       // Optionally, you can redirect or show a success message here
     } catch (error) {
       console.error('Signup failed:', error.message);
