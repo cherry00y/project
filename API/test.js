@@ -75,9 +75,9 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
-            return res.status(500).send('Error selecting admin');
+            return res.status(500).json({ error: 'Error selecting admin' });
         } else if (results.length === 0) {
-            return res.status(404).send('Admin not found');
+            return res.status(404).json({ error: 'Admin not found' });
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
             connection.query(
@@ -85,14 +85,15 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
                 [title, detail, pic, type, id_admin, adminName, adminName], (err, results) => {  // ใช้ DEFAULT สำหรับ date เพื่อให้ MySQL กำหนดค่าโดยอัตโนมัติ
                 if (err) {
                     console.error('Error in POST /information:', err);
-                    return res.status(500).send('Error adding information');
+                    return res.status(500).json({ error: 'Error adding information' });
                 } else {
-                    return res.status(201).send(results);
+                    return res.status(201).json({ message: 'Information added successfully', results });
                 }
             });
         }
     });
 });
+
 
 
 //get information id 
