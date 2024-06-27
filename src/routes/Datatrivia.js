@@ -21,7 +21,7 @@ function Datatrivia() {
     const [news, setNews] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3006/trivia')
+        fetch('http://localhost:3000/trivia')
             .then(response => response.json())
             .then(data => {
                 console.log("Fetched data:", data); // Add this line for debugging
