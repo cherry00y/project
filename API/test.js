@@ -68,30 +68,32 @@ app.get('/trivia', (req, res) => {
 
 // เพิ่ม information
 app.post('/information', authenticateToken, upload.single('pic'), (req, res) => {
-    const { title, detail, date, type } = req.body;
+    const { title, detail, type } = req.body;  // ไม่ต้องรับ date จาก body เพราะจะถูกกำหนดโดยอัตโนมัติ
     const id_admin = req.user.id;
-    const pic = req.file ? req.file.fieldname : null;
+    const pic = req.file ? req.file.filename : null;  // ใช้ filename เพื่อเก็บชื่อไฟล์รูปภาพ
 
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
-            res.status(500).send('Error selecting admin');
+            return res.status(500).send('Error selecting admin');
         } else if (results.length === 0) {
-            res.status(404).send('Admin not found');
+            return res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('INSERT INTO infor (title, detail, `date`, pic, `type`, id_admin, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                [title, detail, date, pic, type, id_admin, adminName, null], (err, results) => {
+            connection.query(
+                'INSERT INTO posts (title, detail, `date`, picture, `type`, id_admin, create_by, update_by) VALUES (?, ?, DEFAULT, ?, ?, ?, ?, ?)', 
+                [title, detail, pic, type, id_admin, adminName, adminName], (err, results) => {  // ใช้ DEFAULT สำหรับ date เพื่อให้ MySQL กำหนดค่าโดยอัตโนมัติ
                 if (err) {
                     console.error('Error in POST /information:', err);
-                    res.status(500).send('Error adding information');
+                    return res.status(500).send('Error adding information');
                 } else {
-                    res.status(201).send(results);
+                    return res.status(201).send(results);
                 }
             });
         }
     });
 });
+
 
 //get information id 
 
