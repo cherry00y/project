@@ -91,7 +91,7 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
             connection.query(
-                'INSERT INTO posts (title, detail, `date`, picture, `type`, id_admin, create_by, update_by) VALUES (?, ?, DEFAULT, ?, ?, ?, ?, ?)', 
+                'INSERT INTO information (title, detail, `date`, picture, `type`, id_admin, create_by, update_by) VALUES (?, ?, DEFAULT, ?, ?, ?, ?, ?)', 
                 [title, detail, pic, type, id_admin, adminName, null], (err, results) => {
                     if (err) {
                         console.error('Error in POST /information:', err);
