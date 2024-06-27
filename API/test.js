@@ -258,6 +258,6 @@ app.post('/login', (req, res) => {
 
 
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3002, () => {
     console.log(`CORS-enabled web server listening on port ${process.env.PORT || 3008}`)
 })
