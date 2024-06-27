@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // กำหนดโฟลเดอร์ที่จะเก็บไฟล์ภาพ
-        cb(null, './uploads');
+        cb(null, 'uploads');
     },
     filename: function (req, file, cb) {
         // กำหนดชื่อของไฟล์ภาพ
