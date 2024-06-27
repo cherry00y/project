@@ -38,7 +38,7 @@ function CreateInfo(){
         data.append('type', formData.type);
       
         try {
-            const response = await fetch('http://localhost:3002/information', {
+            const response = await fetch('http://localhost:3003/information', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
