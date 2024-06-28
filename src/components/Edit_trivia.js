@@ -5,24 +5,21 @@ import './CreateStyles.css'
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function Edittrivia(){
+function Edittrivia() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
-    const [date, setDate] = useState('');
     const [pic, setPic] = useState('');
     const [type, setType] = useState('');
 
-
     useEffect(() => {
-        axios.get(`http://localhost:3000/information/${id}`)
+        axios.get(`http://localhost:3003/information/${id}`)
             .then(response => {
                 const info = response.data;
                 setTitle(info.title);
                 setDetail(info.detail);
-                setDate(new Date(info.date).toISOString().substr(0, 10));
-                setPic(info.pic);
+                setPic(info.base64Image);
                 setType(info.type);
             })
             .catch(error => {
@@ -36,8 +33,9 @@ function Edittrivia(){
         const formData = new FormData();
         formData.append('title', title);
         formData.append('detail', detail);
-        formData.append('date', date);
-        formData.append('pic', pic);
+        if (pic instanceof File) {
+            formData.append('pic', pic);
+        }
         formData.append('type', type);
 
         axios.put(`http://localhost:3003/information/${id}`, formData, {
@@ -92,17 +90,12 @@ function Edittrivia(){
                     </div>
                     <div className="row2">
                         <div className="input-group">
-                            <label htmlFor="date">วันที่เพิ่ม</label>
-                            <input 
-                                type="date" 
-                                id="date" 
-                                required 
-                                value={date} 
-                                onChange={(e) => setDate(e.target.value)} 
-                            />
-                        </div>
-                        <div className="input-group">
                             <label htmlFor="picture">รูปภาพ</label>
+                            {pic && (
+                                <div>
+                                    <img src={`data:image/jpeg;base64,${pic}`} alt="Current" width="100" height="100" />
+                                </div>
+                            )}
                             <input 
                                 type="file" 
                                 id="picture" 
@@ -111,27 +104,27 @@ function Edittrivia(){
                             />
                         </div>
                     </div>
-                    <div class="type-box">
+                    <div className="type-box">
                         <h3>Type</h3>
-                        <div class="type">
+                        <div className="type">
                             <input 
-                            type="radio" 
-                            id="promotion" 
-                            name="type" 
-                            value="promotion and information"
-                            checked={type === 'promotion and information'}
-                            onChange={(e) => setType(e.target.value)}
+                                type="radio" 
+                                id="promotion" 
+                                name="type" 
+                                value="promotion and information"
+                                checked={type === 'promotion and information'}
+                                onChange={(e) => setType(e.target.value)}
                             />
-                            <label for="promotion">promotion and information</label>
+                            <label htmlFor="promotion">promotion and information</label>
                             <input 
-                            type="radio" 
-                            id="trivia" 
-                            name="type" 
-                            value="trivia"
-                            checked={type === 'trivia'}
-                            onChange={(e) => setType(e.target.value)}
+                                type="radio" 
+                                id="trivia" 
+                                name="type" 
+                                value="trivia"
+                                checked={type === 'trivia'}
+                                onChange={(e) => setType(e.target.value)}
                             />
-                            <label for="trivia">trivia</label>
+                            <label htmlFor="trivia">trivia</label>
                         </div>
                     </div>
                     <div className="button-container">
@@ -142,4 +135,5 @@ function Edittrivia(){
         </>
     );
 }
+
 export default Edittrivia;

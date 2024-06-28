@@ -150,7 +150,6 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
     const { id } = req.params;
     const { title, detail, type} = req.body;
     const id_admin = req.user.id;
-    const date = new Date();
     const pic = req.file ? req.file.buffer : null;
 
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
@@ -161,8 +160,8 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
             res.status(404).send('Admin not found');
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('UPDATE infor SET title = ?, detail = ?, `date` = ?, pic = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id = ?',
-                [title, detail, date, pic, type, id_admin, adminName, id],
+            connection.query('UPDATE information SET title = ?, detail = ?,  picture = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id = ?',
+                [title, detail, pic, type, id_admin, adminName, id],
                 (err, results) => {
                     if (err) {
                         console.error('Error in PUT /promotion:', err);
