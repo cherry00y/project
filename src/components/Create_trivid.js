@@ -7,7 +7,7 @@ function CreateTrivia() {
     const [formData, setFormData] = useState({
         title: '',
         detail: '',
-        date: '',
+        //date: '',
         pic: null,
         type: ''
     });
@@ -33,7 +33,7 @@ function CreateTrivia() {
         const data = new FormData();
         data.append('title', formData.title);
         data.append('detail', formData.detail);
-        data.append('date', formData.date);
+        //data.append('date', formData.date);
         data.append('pic', formData.pic);
         data.append('type', formData.type);
       
@@ -100,17 +100,6 @@ function CreateTrivia() {
                         </div>
                     </div>
                     <div className="row2">
-                        <div className="input-group">
-                            <label htmlFor="date">วันที่เพิ่ม</label>
-                            <input
-                                type="date"
-                                id="date"
-                                name="date"
-                                value={formData.date}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
                         <div className="input-group">
                             <label htmlFor="picture">รูปภาพ</label>
                             <input
