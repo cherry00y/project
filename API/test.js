@@ -15,11 +15,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // กำหนดโฟลเดอร์ที่จะเก็บไฟล์ภาพ
         cb(null, 'uploads');
     },
     filename: function (req, file, cb) {
-        // กำหนดชื่อของไฟล์ภาพ
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
@@ -30,7 +28,6 @@ app.use(express.json());
 
 const connection = mysql.createConnection(process.env.DATABASE_URL);
 
-// Middleware สำหรับยืนยันโทเค็น
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -48,28 +45,25 @@ const authenticateToken = (req, res, next) => {
 };
 
 app.get('/', (req, res) => {
-    res.send('anuthida')
-})
+    res.send('anuthida');
+});
 
-// ดึงข้อมูล information
-app.get('/promotion', (req,res) =>{
+app.get('/promotion', (req, res) => {
     const type = 'promotion and information';
 
-    connection.query('SELECT id,title, detail, `date` FROM information WHERE `type` = ?',
-        [type], (err, results) => {
-            if (err) {
-                console.error('Error in GET /promotion:', err);
-                return res.status(500).send('Error fetching promotion information');
-            }
-            return res.status(200).json(results);
-        });
-})
+    connection.query('SELECT id, title, detail, `date` FROM information WHERE `type` = ?', [type], (err, results) => {
+        if (err) {
+            console.error('Error in GET /promotion:', err);
+            return res.status(500).send('Error fetching promotion information');
+        }
+        return res.status(200).json(results);
+    });
+});
 
 app.get('/trivia', (req, res) => {
     const type = 'trivia';
 
-    connection.query('SELECT id,title, detail, `date` FROM information WHERE `type` = ?', 
-        [type], (err, results) => {
+    connection.query('SELECT id, title, detail, `date` FROM information WHERE `type` = ?', [type], (err, results) => {
         if (err) {
             console.error('Error in GET /trivia:', err);
             return res.status(500).send('Error fetching trivia information');
@@ -78,7 +72,6 @@ app.get('/trivia', (req, res) => {
     });
 });
 
-// เพิ่ม information
 app.post('/information', authenticateToken, upload.single('pic'), (req, res) => {
     const { title, detail, type } = req.body;
     const id_admin = req.user.id;
@@ -93,7 +86,7 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
             connection.query(
-                'INSERT INTO information (title, detail, `date`, picture, `type`, id_admin, create_by, update_by) VALUES (?, ?, DEFAULT, ?, ?, ?, ?, ?)', 
+                'INSERT INTO information (title, detail, `date`, picture, `type`, id_admin, create_by, updated_by) VALUES (?, ?, DEFAULT, ?, ?, ?, ?, ?)', 
                 [title, detail, pic, type, id_admin, adminName, null], (err, results) => {
                     if (err) {
                         console.error('Error in POST /information:', err);
@@ -107,9 +100,6 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
     });
 });
 
-
-
-//get information id 
 app.get('/information/:id', (req, res) => {
     const { id } = req.params;
 
@@ -132,7 +122,6 @@ app.get('/information/:id', (req, res) => {
                     return res.status(500).json({ error: 'Error reading image file' });
                 }
 
-                // Convert image to Base64 string
                 const base64Image = Buffer.from(data).toString('base64');
                 info.base64Image = base64Image;
 
@@ -144,8 +133,6 @@ app.get('/information/:id', (req, res) => {
     });
 });
 
-
-// แก้ไข information
 app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) => {
     const { id } = req.params;
     const { title, detail, type } = req.body;
@@ -160,11 +147,10 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
             
-            // ตรวจสอบว่ามีไฟล์รูปภาพใหม่หรือไม่
             if (req.file) {
                 const pic = req.file.filename;
                 connection.query(
-                    'UPDATE information SET title = ?, detail = ?, picture = ?, `type` = ?, update_by = ? WHERE id = ?', 
+                    'UPDATE information SET title = ?, detail = ?, picture = ?, `type` = ?, updated_by = ? WHERE id = ?', 
                     [title, detail, pic, type, adminName, id], (err, results) => {
                         if (err) {
                             console.error('Error in PUT /information:', err);
@@ -176,7 +162,7 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
                 );
             } else {
                 connection.query(
-                    'UPDATE information SET title = ?, detail = ?, `type` = ?, update_by = ? WHERE id = ?', 
+                    'UPDATE information SET title = ?, detail = ?, `type` = ?, updated_by = ? WHERE id = ?', 
                     [title, detail, type, adminName, id], (err, results) => {
                         if (err) {
                             console.error('Error in PUT /information:', err);
