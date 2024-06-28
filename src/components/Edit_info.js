@@ -11,7 +11,7 @@ function EditInfo() {
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
     const [pic, setPic] = useState('');
-    const [originalPic, setOriginalPic] = useState(''); // เพิ่มตัวแปรสำหรับเก็บชื่อไฟล์ต้นฉบับ
+    const [originalPic, setOriginalPic] = useState('');
     const [type, setType] = useState('');
 
     useEffect(() => {
@@ -98,9 +98,11 @@ function EditInfo() {
                                     <img src={`data:image/jpeg;base64,${pic}`} alt="Current" width="100" height="100" />
                                 </div>
                             )}
-                            {originalPic && (
-                                <p>Current file: {originalPic}</p> // แสดงชื่อไฟล์ต้นฉบับ
-                            )}
+                            <input 
+                                type="text" 
+                                value={originalPic} 
+                                disabled 
+                            />
                             <input 
                                 type="file" 
                                 id="picture" 
