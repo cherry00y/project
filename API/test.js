@@ -3,6 +3,8 @@ const multer = require('multer');
 const cors = require('cors');
 const mysql = require('mysql2');
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const bcrypt = require('bcrypt');
@@ -111,7 +113,7 @@ app.post('/information', authenticateToken, upload.single('pic'), (req, res) => 
 app.get('/information/:id', (req, res) => {
     const { id } = req.params;
 
-    connection.query('SELECT title, detail, `date`, pic, `type` FROM information WHERE id = ?', [id], (err, results) => {
+    connection.query('SELECT title, detail, picture, `type` FROM posts WHERE id = ?', [id], (err, results) => {
         if (err) {
             console.error('Error in GET /information/:id:', err);
             return res.status(500).json({ error: 'Error fetching information' });
@@ -122,12 +124,23 @@ app.get('/information/:id', (req, res) => {
 
         const info = results[0];
 
-        // Convert LONGBLOB data to Base64 string
-        const base64Image = Buffer.from(info.pic).toString('base64');
+        if (info.picture) {
+            const imagePath = path.join(__dirname, 'uploads', info.picture);
+            fs.readFile(imagePath, (err, data) => {
+                if (err) {
+                    console.error('Error reading image file:', err);
+                    return res.status(500).json({ error: 'Error reading image file' });
+                }
 
-        info.base64Image = base64Image; // Add Base64 encoded image to info object
+                // Convert image to Base64 string
+                const base64Image = Buffer.from(data).toString('base64');
+                info.base64Image = base64Image;
 
-        return res.status(200).json(info);
+                return res.status(200).json(info);
+            });
+        } else {
+            return res.status(200).json(info);
+        }
     });
 });
 
