@@ -148,29 +148,45 @@ app.get('/information/:id', (req, res) => {
 // แก้ไข information
 app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) => {
     const { id } = req.params;
-    const { title, detail, type} = req.body;
+    const { title, detail, type } = req.body;
     const id_admin = req.user.id;
-    const pic = req.file ? req.file.buffer : null;
 
     connection.query('SELECT fname, lname FROM `admin` WHERE id = ?', [id_admin], (err, results) => {
         if (err) {
             console.error('Error in selecting admin:', err);
-            res.status(500).send('Error selecting admin');
+            return res.status(500).json({ error: 'Error selecting admin' });
         } else if (results.length === 0) {
-            res.status(404).send('Admin not found');
+            return res.status(404).json({ error: 'Admin not found' });
         } else {
             const adminName = `${results[0].fname} ${results[0].lname}`;
-            connection.query('UPDATE information SET title = ?, detail = ?,  picture = ?, `type` = ?, id_admin = ?, updated_by = ? WHERE id = ?',
-                [title, detail, pic, type, id_admin, adminName, id],
-                (err, results) => {
-                    if (err) {
-                        console.error('Error in PUT /promotion:', err);
-                        res.status(500).send('Error updating information');
-                    } else {
-                        res.status(200).json({ message: 'Information updated successfully' });
+            
+            // ตรวจสอบว่ามีไฟล์รูปภาพใหม่หรือไม่
+            if (req.file) {
+                const pic = req.file.filename;
+                connection.query(
+                    'UPDATE posts SET title = ?, detail = ?, picture = ?, `type` = ?, update_by = ? WHERE id = ?', 
+                    [title, detail, pic, type, adminName, id], (err, results) => {
+                        if (err) {
+                            console.error('Error in PUT /information:', err);
+                            return res.status(500).json({ error: 'Error updating information' });
+                        } else {
+                            return res.status(200).json({ message: 'Information updated successfully', results });
+                        }
                     }
-                }
-            );
+                );
+            } else {
+                connection.query(
+                    'UPDATE posts SET title = ?, detail = ?, `type` = ?, update_by = ? WHERE id = ?', 
+                    [title, detail, type, adminName, id], (err, results) => {
+                        if (err) {
+                            console.error('Error in PUT /information:', err);
+                            return res.status(500).json({ error: 'Error updating information' });
+                        } else {
+                            return res.status(200).json({ message: 'Information updated successfully', results });
+                        }
+                    }
+                );
+            }
         }
     });
 });
