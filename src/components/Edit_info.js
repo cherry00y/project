@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import { MenuItems } from '../components/MenuItems';
-import './CreateStyles.css';
+import React, { useEffect, useState } from "react";
+import Navbar from './Navbar';
+import { MenuItems } from './MenuItems';
+import './CreateStyles.css'
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -10,10 +10,8 @@ function EditInfo() {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
-    const [date, setDate] = useState('');
-    const [pic, setPic] = useState(null);
+    const [pic, setPic] = useState('');
     const [type, setType] = useState('');
-    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
         axios.get(`http://localhost:3003/information/${id}`)
@@ -21,22 +19,13 @@ function EditInfo() {
                 const info = response.data;
                 setTitle(info.title);
                 setDetail(info.detail);
-                setDate(new Date(info.date).toISOString().substr(0, 10));
+                setPic(info.base64Image);
                 setType(info.type);
-                if (info.pic) {
-                    setPreview(`data:image/jpeg;base64,${info.pic}`);
-                }
             })
             .catch(error => {
                 console.error('Error fetching information:', error);
             });
     }, [id]);
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setPic(file);
-        setPreview(URL.createObjectURL(file));
-    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -44,11 +33,12 @@ function EditInfo() {
         const formData = new FormData();
         formData.append('title', title);
         formData.append('detail', detail);
-        formData.append('date', date);
-        formData.append('pic', pic);
+        if (pic instanceof File) {
+            formData.append('pic', pic);
+        }
         formData.append('type', type);
 
-        axios.put(`http://localhost:3000/information/${id}`, formData, {
+        axios.put(`http://localhost:3003/information/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -56,7 +46,7 @@ function EditInfo() {
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/infomation/promotion');
+            navigate('/datatrivia');
         })
         .catch(error => {
             console.error('Error updating information:', error);
@@ -100,44 +90,39 @@ function EditInfo() {
                     </div>
                     <div className="row2">
                         <div className="input-group">
-                            <label htmlFor="date">วันที่เพิ่ม</label>
-                            <input 
-                                type="date" 
-                                id="date" 
-                                required 
-                                value={date} 
-                                onChange={(e) => setDate(e.target.value)} 
-                            />
-                        </div>
-                        <div className="input-group">
                             <label htmlFor="picture">รูปภาพ</label>
+                            {pic && (
+                                <div>
+                                    <img src={`data:image/jpeg;base64,${pic}`} alt="Current" width="100" height="100" />
+                                </div>
+                            )}
                             <input 
                                 type="file" 
                                 id="picture" 
-                                onChange={handleFileChange} 
+                                accept="image/*" 
+                                onChange={(e) => setPic(e.target.files[0])} 
                             />
-                            {preview && <img src={preview} alt="Preview" width="200" />}
                         </div>
                     </div>
                     <div className="type-box">
                         <h3>Type</h3>
                         <div className="type">
                             <input 
-                            type="radio" 
-                            id="promotion" 
-                            name="type" 
-                            value="promotion and information"
-                            checked={type === 'promotion and information'}
-                            onChange={(e) => setType(e.target.value)}
+                                type="radio" 
+                                id="promotion" 
+                                name="type" 
+                                value="promotion and information"
+                                checked={type === 'promotion and information'}
+                                onChange={(e) => setType(e.target.value)}
                             />
                             <label htmlFor="promotion">promotion and information</label>
                             <input 
-                            type="radio" 
-                            id="trivia" 
-                            name="type" 
-                            value="trivia"
-                            checked={type === 'trivia'}
-                            onChange={(e) => setType(e.target.value)}
+                                type="radio" 
+                                id="trivia" 
+                                name="type" 
+                                value="trivia"
+                                checked={type === 'trivia'}
+                                onChange={(e) => setType(e.target.value)}
                             />
                             <label htmlFor="trivia">trivia</label>
                         </div>
