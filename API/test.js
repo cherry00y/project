@@ -164,7 +164,7 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
             if (req.file) {
                 const pic = req.file.filename;
                 connection.query(
-                    'UPDATE posts SET title = ?, detail = ?, picture = ?, `type` = ?, update_by = ? WHERE id = ?', 
+                    'UPDATE information SET title = ?, detail = ?, picture = ?, `type` = ?, update_by = ? WHERE id = ?', 
                     [title, detail, pic, type, adminName, id], (err, results) => {
                         if (err) {
                             console.error('Error in PUT /information:', err);
@@ -176,7 +176,7 @@ app.put('/information/:id', authenticateToken, upload.single('pic'), (req, res) 
                 );
             } else {
                 connection.query(
-                    'UPDATE posts SET title = ?, detail = ?, `type` = ?, update_by = ? WHERE id = ?', 
+                    'UPDATE information SET title = ?, detail = ?, `type` = ?, update_by = ? WHERE id = ?', 
                     [title, detail, type, adminName, id], (err, results) => {
                         if (err) {
                             console.error('Error in PUT /information:', err);
