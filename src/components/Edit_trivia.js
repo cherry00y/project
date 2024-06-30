@@ -5,12 +5,13 @@ import './CreateStyles.css'
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function Edittrivia() {
+function EditTrivia() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [detail, setDetail] = useState('');
     const [pic, setPic] = useState('');
+    const [originalPic, setOriginalPic] = useState('');
     const [type, setType] = useState('');
 
     useEffect(() => {
@@ -20,6 +21,7 @@ function Edittrivia() {
                 setTitle(info.title);
                 setDetail(info.detail);
                 setPic(info.base64Image);
+                setOriginalPic(info.picture); // ตั้งค่าชื่อไฟล์ต้นฉบับ
                 setType(info.type);
             })
             .catch(error => {
@@ -46,7 +48,7 @@ function Edittrivia() {
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/datatrivia');
+            navigate('/infomation/promotion');
         })
         .catch(error => {
             console.error('Error updating information:', error);
@@ -97,6 +99,11 @@ function Edittrivia() {
                                 </div>
                             )}
                             <input 
+                                type="text" 
+                                value={originalPic} 
+                                disabled 
+                            />
+                            <input 
                                 type="file" 
                                 id="picture" 
                                 accept="image/*" 
@@ -136,4 +143,4 @@ function Edittrivia() {
     );
 }
 
-export default Edittrivia;
+export default EditTrivia;

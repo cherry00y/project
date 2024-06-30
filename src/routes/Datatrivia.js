@@ -47,7 +47,7 @@ function Datatrivia() {
                             <div className='detail'>
                                 <div className='info'>
                                     <h1>{item.title}</h1>
-                                    <p>{item.detail}</p>
+                                    <p className='ellipsis'>{item.detail}</p>
                                 </div>
                             </div>
                             <p>

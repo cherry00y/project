@@ -48,7 +48,7 @@ function EditInfo() {
         })
         .then(response => {
             console.log('Information updated successfully:', response.data);
-            navigate('/datatrivia');
+            navigate('/infomation/promotion');
         })
         .catch(error => {
             console.error('Error updating information:', error);
